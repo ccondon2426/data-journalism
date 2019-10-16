@@ -179,8 +179,10 @@ arrange(desc(total_pills))
 ```{r}
 #What city in Baltimore County received the most pills?
 
-bco_raw <- clean_names(bco_raw)
-bco_raw %>%
+
+bco_totals <- buyer_addresses(county="Baltimore", state = "MD", key = key)
+bco_totals <- clean_names(bco_totals)
+bco_totals %>%
 inner_join(buyer_totals, by = "buyer_dea_no") %>%
 select("buyer_city", "total_pills") %>%
 group_by(buyer_city) %>%
@@ -192,23 +194,26 @@ arrange(desc(dosage_unit))
 
 ```{r}
 #I noticed that Lutherville Timonium appears twice. Once with a dash, and once without. How does the city rank if it is named properly?
-bco_raw <- clean_names(bco_raw)
-bco_raw %>%
+
+bco_totals %>%
 inner_join(buyer_totals, by = "buyer_dea_no") %>%
 select("buyer_city", "total_pills") %>%
 group_by(buyer_city) %>%
   summarise(dosage_unit = sum(total_pills)) %>%
-arrange(desc(dosage_unit))
-  #case_when(buyer_city == "Lutherville Timonium " ~ "Lutherville-Timonium",
-       # buyer_city == "Lutherville" ~ "Lutherville-Timonium"
-       # )
+arrange(desc(dosage_unit)) %>%
+   mutate(buyer_city = case_when(buyer_city == "LUTHERVILLE TIMONIUM" ~ "Lutherville-Timonium",
+        buyer_city == "LUTHERVILLE" ~ "Lutherville-Timonium",
+        buyer_city == "LUTHERVILLE-TIMONIUM" ~ "Lutherville-Timonium",
+        TRUE ~ buyer_city)) %>%
+group_by(buyer_city) %>%
+  summarise(sum(dosage_unit))
 
 ```
 
 
 ```{r}
 #What pharmacy in Baltimore County received the most pills?
-bco_raw %>%
+bco_totals %>%
 inner_join(buyer_totals, by = "buyer_dea_no") %>%
 select("buyer_name", "buyer_address1", "total_pills") %>%
 arrange(desc(total_pills))
