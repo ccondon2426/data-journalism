@@ -199,7 +199,7 @@ maryland_2012_per_capita <- maryland_2012 %>%
   mutate(pills_per_capita = dosage_unit/population)
 
 #renaming GEOID column to be county fips
-#md_county_median_household_income <- rename(md_county_median_household_income, "countyfips" = "GEOID")
+md_county_median_household_income <- rename(md_county_median_household_income, "countyfips" = "GEOID")
 
 #joining it all together by countyfips
 md_2012 <-maryland_2012_per_capita %>%
