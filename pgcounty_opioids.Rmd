@@ -1,0 +1,105 @@
+---
+title: "pgcounty"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r}
+
+library(tidyverse)
+library(janitor)
+library(arcos)
+library(scales)
+library(ggrepel)
+library(tidycensus)
+
+```
+
+```{r}
+# store one of our API keys as an object called key
+key <- "uO4EK6I"
+```
+
+```{r}
+arcos_county_pills_per_year <- summarized_county_annual(key = key) %>%
+  clean_names()
+
+```
+
+```{r}
+pg_county_pills_per_year <- arcos_county_pills_per_year %>%
+  filter(buyer_state == "MD", buyer_county == "PRINCE GEORGES") %>%
+  select(year, dosage_unit)
+
+ ggplot(pg_county_pills_per_year) +
+  geom_bar(stat="identity", aes(year, dosage_unit), fill="forest green") +
+  labs(x="Year", y="Total pills", title="Opioids sent to Prince George's County", caption = "Source: DEA ARCOS database, via Washington Post") +
+  scale_x_continuous(breaks = c(2006, 2007, 2008, 2009, 2010, 2011, 2012)) +
+  scale_y_continuous(labels = comma)
+
+```
+```{r}
+cp_pharmacies <- arcos.md.prince.georges.24033.pharmacy %>%
+  filter(buyer_city == "COLLEGE PARK")
+#pharmacies in cp
+```
+
+```{r}
+pg_compared <- arcos_county_pills_per_year %>%
+  filter(buyer_state == "MD", (buyer_county %in% c("PRINCE GEORGES", "MONTGOMERY", "HOWARD", "BALTIMORE CITY","BALTIMORE", "ANNE ARUNDEL"))) %>%
+  select(buyer_county, year, dosage_unit)  
+
+ggplot(pg_compared) +
+  geom_bar(stat="identity", aes(year, dosage_unit, fill=buyer_county)) +
+  labs(x="Year", y="Total pills", title="Opioids shipped to Prince George's County compared to \nother Maryland counties", caption = "Source: DEA ARCOS database, via Washington Post", fill="County") +
+  scale_x_continuous(breaks = c(2006, 2007, 2008, 2009, 2010, 2011, 2012)) +
+  scale_y_continuous(labels = comma) +
+  facet_wrap(nrow=2, . ~ buyer_county) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+#creating population table
+pg_pills_2012 <- arcos_county_pills_per_year %>%
+  filter(buyer_state == "MD", buyer_county == "PRINCE GEORGES", year =="2012") %>%
+  select(countyfips, buyer_county, year, dosage_unit)
+
+#creating pills table
+pg_population_2012 <- county_population(key = key) %>%
+  clean_names() %>%
+  filter(buyer_state == "MD", buyer_county == "PRINCE GEORGES", year=="2012") %>%
+  select(countyfips, buyer_county, population)
+
+#putting pills and population together in the same table
+pg_2012 <- pg_pills_2012 %>%
+left_join(pg_population_2012, by=("countyfips"))
+
+#creating column that divides pills by population
+pg_2012_per_capita <- pg_2012 %>%
+  mutate(pills_per_capita = dosage_unit/population)
+
+```
+```
