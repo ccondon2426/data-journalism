@@ -41,10 +41,10 @@ Loading ARCOS county data.
  # clean_names()
 
 #phamarcy_pill_totals <- combined_buyer_annual(county = "Mingo", state = "WV", key = key) %>%
- # clean_names()
+  #clean_names()
 
 #pharmacy_census_tract <- pharm_tracts(key = key) %>%
- # clean_names()
+  #clean_names()
 
 #tracts_pills_per_year <- pharmacy_pill_totals  %>%
 #inner_join(phamarcy_census_tract, by = "buyer_dea_no")
@@ -228,4 +228,42 @@ inner_join(imperial_buyer_details, by= "BUYER_DEA_NO")
 #The Walgreens the El Centro
 ```
 
+Question 13: What does the graph of pills per capita per year look like for Mendocino?
+```{r}
+ggplot(mendocino_finished) +
+ geom_point(aes(year, pills_per_capita)) +
+ labs(x="Year", y="Pills per Person", title="Pills per capita  sent to Mendocino County between 20016 and 2012", caption = "Source: DEA ARCOS database, via Washington Post", fill="year") +
+ theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+ geom_smooth(aes(year, pills_per_capita), method = "lm", se = FALSE)
+ #geom_text(aes(year, pills_per_capita, label=buyer_county))
+```
 
+Question 14: What does the graph of pills per capita per year look like for Wayne?
+
+```{r}
+ggplot(wayne_finished) +
+ geom_point(aes(year, pills_per_capita)) +
+ labs(x="Year", y="Pills per Person", title="Pills per capita sent to Wayne County between 20016 and 2012", caption = "Source: DEA ARCOS database, via Washington Post", fill="year") +
+ theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+ geom_smooth(aes(year, pills_per_capita), method = "lm", se = FALSE)
+ #geom_text(aes(year, pills_per_capita, label=buyer_county))
+```
+Question 15: What does the graph of pills per capita per year look like for Tuscaloosa?
+```{r}
+ggplot(tusca_finished) +
+ geom_point(aes(year, pills_per_capita)) +
+ labs(x="Year", y="Pills per Person", title="Pills per capita sent to Tuscaloosa between 20016 and 2012", caption = "Source: DEA ARCOS database, via Washington Post", fill="year") +
+ theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+ geom_smooth(aes(year, pills_per_capita), method = "lm", se = FALSE)
+ #geom_text(aes(year, pills_per_capita, label=buyer_county))
+```
+Question 16: What does the graph of pills per capita per year look like for Imperial?
+
+```{r}
+ggplot(imp_finished) +
+ geom_point(aes(year, pills_per_capita)) +
+ labs(x="Year", y="Pills per Person", title="Pills per capita sent to Imperial County between 20016 and 2012", caption = "Source: DEA ARCOS database, via Washington Post", fill="year") +
+ theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+ geom_smooth(aes(year, pills_per_capita), method = "lm", se = FALSE)
+ #geom_text(aes(year, pills_per_capita, label=buyer_county))
+```
