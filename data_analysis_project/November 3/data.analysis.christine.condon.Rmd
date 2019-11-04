@@ -23,7 +23,6 @@ library(tidycensus)
 library(ggthemes)
 #install.packages("mapview")
 library(mapview)
-
 ```
 
 Storing key for ARCOS access.
@@ -37,30 +36,67 @@ Loading ARCOS county data.
 
 ```{r}
 
-#arcos_county_pills_per_year <- summarized_county_annual(key = key) %>%
- # clean_names()
+arcos_county_pills_per_year <- summarized_county_annual(key = key) %>%
+ clean_names()
 
-#phamarcy_pill_totals <- combined_buyer_annual(county = "Mingo", state = "WV", key = key) %>%
-  #clean_names()
+pharmacy_pill_totals <- combined_buyer_annual(county = "Mingo", state = "WV", key = key) %>%
+  clean_names()
 
-#pharmacy_census_tract <- pharm_tracts(key = key) %>%
-  #clean_names()
+pharmacy_census_tract <- pharm_tracts(key = key) %>%
+  clean_names()
 
-#tracts_pills_per_year <- pharmacy_pill_totals  %>%
-#inner_join(phamarcy_census_tract, by = "buyer_dea_no")
- 
+tracts_pills_per_year <- pharmacy_pill_totals %>%
+  inner_join(pharmacy_census_tract, by="buyer_dea_no")
+
 ```
 
-#The join is not working because the object I created for each of the pharmacies in Mingo County is "not found".I cannot determine the reason for this error. Once I figure out how to complete this join, I will have the pharmacies in this Census tract and the number of pills each one received. Then, I will use the crosswalk csv to connect the census tracts with CoCs, and then I can begin my analysis.
+#Now, I have a table linking all of the pharmacies in Mingo County, West Virginia to their appropriate Census tract.Before I join the census tracts with their corresponding CoCs, I'd like to get the pills per person total for each particular Census tract in Mingo.
 
+```{r}
+mingo_tracts_pills_per_year <- tracts_pills_per_year %>%
+  group_by(geoid) %>%
+  summarise(sum(dosage_unit))
 
-Loading crosswalk.
+```
+
+#Now that I have that, I'd like to link each of these tracts to their corresponding Continuum of Care, WV's Balance of State CoC,which handles many rural parts of the state.
+
+#First, I'll load in crosswalk, which allows me to do this.
 
 ```{r}
 crosswalk <- read_csv("data/crosswalk-coc-to-tract.csv")
 ```
+#Now, I'll join it to the Mingo Census tract totals I calculated earlier.
 
-#In the meantime, I will answer questions I feel will be helfpul dor my analysis in the future. See below.
+```{r}
+mingo_coc_census_tracts <- crosswalk %>%
+  inner_join(mingo_tracts_pills_per_year, by = c("tract_fips"="geoid"))
+  
+```
+
+#Now I have Census tracts together with the CoC designation for Mingo, meaning I could join in homelessness data. It is, however, important to note, that since Mingo County forms part of the Balance of State CoC, it's not the only locality included within the HUD homelessness data. Rather, the homelessness data that will be pulled in comes from numerous rural parts of the state, across about 40 counties. So, I thought it might be interesting to do this for a county is also a CoC, such as Mendocino County, which had the highest rate of homelessness in 2017.
+
+```{r}
+mend_pharmacy_pill_totals <- combined_buyer_annual(county = "Mendocino", state = "CA", key = key) %>%
+  clean_names()
+
+mend_tracts_pills_per_year <- mend_pharmacy_pill_totals %>%
+  inner_join(pharmacy_census_tract, by="buyer_dea_no")
+
+mendocino_tracts_pills_per_year <- mend_tracts_pills_per_year %>%
+  group_by(geoid) %>%
+  summarise(sum(dosage_unit))
+
+```
+
+#Now that I have the number of pills that flowed into the county's different census tracts during the 2006 to 2012 period, let's connect that to CoC, just like before.
+
+```{r}
+mendo_coc_census_tracts <- crosswalk %>%
+  inner_join(mendocino_tracts_pills_per_year, by = c("tract_fips"="geoid"))
+```
+
+#This will work well for analysis purposes once I can bring in homelessness data because Mendocino County is its own CoC. In the meantime, I will answer questions I feel will be helfpul dor my analysis in the future. See below.
 
 Question 1: I know that Mendocino County, California had the highest rate of homelessness in 2017 based on PIT count data analysis by the Howard Center. How many opioids were shipped there between '06 and '12? 
 
