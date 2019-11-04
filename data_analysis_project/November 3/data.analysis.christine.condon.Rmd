@@ -1,0 +1,231 @@
+---
+title: "data.analysis.condon"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+```{r}
+
+# Load Tidyverse, janitor and arcos, tidycensus, mapview, ggthemes, scales
+library(tidyverse)
+library(janitor)
+library(arcos)
+library(scales)
+library(tidycensus)
+#install.packages("ggthemes")
+library(ggthemes)
+#install.packages("mapview")
+library(mapview)
+
+```
+
+Storing key for ARCOS access.
+
+```{r}
+# store one of our API keys as an object called key
+key <- "uO4EK6I"
+```
+
+Loading ARCOS county data.
+
+```{r}
+
+#arcos_county_pills_per_year <- summarized_county_annual(key = key) %>%
+ # clean_names()
+
+#phamarcy_pill_totals <- combined_buyer_annual(county = "Mingo", state = "WV", key = key) %>%
+ # clean_names()
+
+#pharmacy_census_tract <- pharm_tracts(key = key) %>%
+ # clean_names()
+
+#tracts_pills_per_year <- pharmacy_pill_totals  %>%
+#inner_join(phamarcy_census_tract, by = "buyer_dea_no")
+ 
+```
+
+#The join is not working because the object I created for each of the pharmacies in Mingo County is "not found".I cannot determine the reason for this error. Once I figure out how to complete this join, I will have the pharmacies in this Census tract and the number of pills each one received. Then, I will use the crosswalk csv to connect the census tracts with CoCs, and then I can begin my analysis.
+
+
+Loading crosswalk.
+
+```{r}
+crosswalk <- read_csv("data/crosswalk-coc-to-tract.csv")
+```
+
+#In the meantime, I will answer questions I feel will be helfpul dor my analysis in the future. See below.
+
+Question 1: I know that Mendocino County, California had the highest rate of homelessness in 2017 based on PIT count data analysis by the Howard Center. How many opioids were shipped there between '06 and '12? 
+
+```{r}
+mendocino_pills_annual <- combined_buyer_annual(county = "Mendocino", state = "CA", key = key) %>%
+  clean_names() %>%
+group_by(buyer_dea_no) %>%
+summarise(total_pills = sum(dosage_unit))%>%
+mutate(county_pills =sum(total_pills))
+  #38,751,915
+```
+
+
+Question 2: I know that Dearborn, Michigan had the lowest rate of homelessness in 2017 based on PIT count data analysis by the Howard Center.How many opioids were shipped there between '06 and '12? 
+
+```{r}
+wayne_pills_annual <- combined_buyer_annual(county = "Wayne", state = "MI", key = key) %>%
+  clean_names() %>%
+group_by(buyer_dea_no) %>%
+summarise(total_pills = sum(dosage_unit))%>%
+mutate(county_pills =sum(total_pills))
+#618,073,160
+```
+
+Question 3: I know that Tuscaloosa, Alabama had the lowest percent cahnge in overall homelessness count between 2014 and 2018, according to Howard Center data analysis of the PIT Count. How many opioids were shipped there between '06 and '12?
+
+```{r}
+tuscaloosa_pills_annual <- combined_buyer_annual(county = "Tuscaloosa", state = "AL", key = key) %>%
+  clean_names() %>%
+group_by(buyer_dea_no) %>%
+summarise(total_pills = sum(dosage_unit))%>%
+mutate(county_pills =sum(total_pills))
+
+#49,843,360
+```
+
+Question 4: I know that Imperial County, CA had the highest percent change in overall homelessness count between 2014 and 2018, according to Howard Center data analysis of the PIT Count. How many opioids were shipped there between '06 and '12?
+
+```{r}
+imperial_pills_annual <- combined_buyer_annual(county = "Imperial", state = "CA", key = key) %>%
+  clean_names() %>%
+group_by(buyer_dea_no) %>%
+summarise(total_pills = sum(dosage_unit))%>%
+mutate(county_pills =sum(total_pills))
+
+#	23,887,210
+```
+
+Question 5: What's the average number of pills per person shipped to Mendocino County between '06 and '12?
+```{r}
+mendocino_yearly_pills <- summarized_county_annual(county = "Mendocino", state = "CA", key = key)
+
+mendocino_population <- county_population(county = "Mendocino", state = "CA", key = key) 
+
+mendocino_population_working <- subset(mendocino_population, select = c(year, population))
+
+mendocino_per_capita <- inner_join(mendocino_population_working, mendocino_yearly_pills)
+
+mendocino_finished <- mendocino_per_capita %>%
+ mutate(pills_per_capita = DOSAGE_UNIT/population) %>%
+mutate(avg_pills_per_capita = mean(pills_per_capita))
+
+#63.47546 pills per person
+```
+Question 6: What's the average number of pills per person shipped to Wayne County between '06 and '12?
+
+```{r}
+wayne_yearly_pills <- summarized_county_annual(county = "Wayne", state = "MI", key = key)
+
+wayne_population <- county_population(county = "Wayne", state = "MI", key = key) 
+
+wayne_population_working <- subset(wayne_population, select = c(year, population))
+
+wayne_per_capita <- inner_join(wayne_population_working, wayne_yearly_pills)
+
+wayne_finished <- wayne_per_capita %>%
+ mutate(pills_per_capita = DOSAGE_UNIT/population) %>%
+mutate(avg_pills_per_capita = mean(pills_per_capita))
+
+#46.9917 pills per person
+```
+Question 7: What's the average number of pills per person shipped to Tuscaloosa between '06 and '12?
+
+```{r}
+tusca_yearly_pills <- summarized_county_annual(county = "Tuscaloosa", state = "AL", key = key)
+
+tusca_population <- county_population(county = "Tuscaloosa", state = "AL", key = key) 
+
+tusca_population_working <- subset(tusca_population, select = c(year, population))
+
+tusca_per_capita <- inner_join(tusca_population_working, tusca_yearly_pills)
+
+tusca_finished <- tusca_per_capita %>%
+ mutate(pills_per_capita = DOSAGE_UNIT/population) %>%
+mutate(avg_pills_per_capita = mean(pills_per_capita))
+
+#38.02098 pills per person
+```
+Question 8: What's the average number of pills per person shipped to Imperial County between '06 and '12?
+
+```{r}
+imp_yearly_pills <- summarized_county_annual(county = "Imperial", state = "CA", key = key)
+
+imp_population <- county_population(county = "Imperial", state = "CA", key = key) 
+imp_population_working <- subset(imp_population, select = c(year, population))
+
+imp_per_capita <- inner_join(imp_population_working, imp_yearly_pills)
+
+imp_finished <- imp_per_capita %>%
+ mutate(pills_per_capita = DOSAGE_UNIT/population) %>%
+mutate(avg_pills_per_capita = mean(pills_per_capita))
+
+#20.41986 pills per person
+```
+
+Question 9: Which pharmacy in Mendocino County received the most pills in one year?
+
+```{r}
+mendocino_worst_pharmacy <- combined_buyer_annual(county= "Mendocino", state = "CA", key = key) %>%
+  arrange(desc(DOSAGE_UNIT))
+mendocino_buyer_details <- buyer_details(county="Mendocino", state="CA", key = key)
+
+mendocino_worst_pharmacy_name <- mendocino_worst_pharmacy %>%
+inner_join(mendocino_buyer_details, by= "BUYER_DEA_NO")
+#MYERS MEDICAL PHARMACY in 2012
+```
+Question 10: Which pharmacy in Wayne County received the most pills in one year?
+
+```{r}
+wayne_worst_pharmacy <- combined_buyer_annual(county= "Wayne", state = "MI", key = key) %>%
+  arrange(desc(DOSAGE_UNIT))
+wayne_buyer_details <- buyer_details(county="Wayne", state="MI", key = key)
+
+wayne_worst_pharmacy_name <- wayne_worst_pharmacy %>%
+inner_join(wayne_buyer_details, by= "BUYER_DEA_NO")
+
+#OMNICARE OF SOUTHERN MICHIGAN every year between 06 and 12
+
+```
+
+Question 11: Which pharmacy in Tuscaloosa received the most pills between '06 and '12?
+```{r}
+tusca_worst_pharmacy <- combined_buyer_annual(county= "Tuscaloosa", state = "AL", key = key) %>%
+  arrange(desc(DOSAGE_UNIT))
+
+tusca_buyer_details <- buyer_details(county="Tuscaloosa", state="AL", key = key)
+
+tusca_worst_pharmacy_name <- tusca_worst_pharmacy %>%
+inner_join(tusca_buyer_details, by= "BUYER_DEA_NO")
+
+#SENIOR CARE PHARMACY every year between 06 and 12
+```
+
+Question 12: Which pharmacy in Imperial County received the most pills between '06 and '12?
+
+```{r}
+imperial_worst_pharmacy <- combined_buyer_annual(county= "Imperial", state = "CA", key = key) %>%
+  arrange(desc(DOSAGE_UNIT))
+
+imperial_buyer_details <- buyer_details(county="Imperial", state="CA", key = key)
+
+imperial_worst_pharmacy_name <- imperial_worst_pharmacy %>%
+inner_join(imperial_buyer_details, by= "BUYER_DEA_NO")
+
+#The Walgreens the El Centro
+```
+
+
