@@ -1,0 +1,57 @@
+---
+title: "data_analysis_dumpster"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+#Now, I have a table linking all of the pharmacies in Mingo County, West Virginia to their appropriate Census tract.Before I join the census tracts with their corresponding CoCs, I'd like to get the pills per person total for each particular Census tract in Mingo.
+
+```{r}
+mingo_tracts_pills_per_year <- tracts_pills_per_year %>%
+  group_by(geoid) %>%
+  summarise(sum(dosage_unit))
+
+```
+
+#Now that I have that, I'd like to link each of these tracts to their corresponding Continuum of Care, WV's Balance of State CoC,which handles many rural parts of the state.
+
+#First, I'll load in crosswalk, which allows me to do this.
+
+```{r}
+crosswalk <- read_csv("data/crosswalk-coc-to-tract.csv")
+```
+#Now, I'll join it to the Mingo Census tract totals I calculated earlier.
+
+```{r}
+mingo_coc_census_tracts <- crosswalk %>%
+  inner_join(mingo_tracts_pills_per_year, by = c("tract_fips"="geoid"))
+  
+```
+
+#Now I have Census tracts together with the CoC designation for Mingo, meaning I could join in homelessness data. It is, however, important to note, that since Mingo County forms part of the Balance of State CoC, it's not the only locality included within the HUD homelessness data. Rather, the homelessness data that will be pulled in comes from numerous rural parts of the state, across about 40 counties. So, I thought it might be interesting to do this for a county is also a CoC, such as Mendocino County, which had the highest rate of homelessness in 2017.
+
+MENDOCINO
+
+```{r}
+mend_pharmacy_pill_totals <- combined_buyer_annual(county = "Mendocino", state = "CA", key = key) %>%
+  clean_names()
+
+mend_tracts_pills_per_year <- mend_pharmacy_pill_totals %>%
+  inner_join(pharmacy_census_tract, by="buyer_dea_no")
+
+mendocino_tracts_pills_per_year <- mend_tracts_pills_per_year %>%
+  group_by(geoid) %>%
+  summarise(sum(dosage_unit))
+
+```
+
+#Now that I have the number of pills that flowed into the county's different census tracts during the 2006 to 2012 period, let's connect that to CoC, just like before.
+
+```{r}
+mendo_coc_census_tracts <- crosswalk %>%
+  inner_join(mendocino_tracts_pills_per_year, by = c("tract_fips"="geoid"))
+```

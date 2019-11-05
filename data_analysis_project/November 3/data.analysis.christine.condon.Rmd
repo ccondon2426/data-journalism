@@ -50,53 +50,104 @@ tracts_pills_per_year <- pharmacy_pill_totals %>%
 
 ```
 
-#Now, I have a table linking all of the pharmacies in Mingo County, West Virginia to their appropriate Census tract.Before I join the census tracts with their corresponding CoCs, I'd like to get the pills per person total for each particular Census tract in Mingo.
-
-```{r}
-mingo_tracts_pills_per_year <- tracts_pills_per_year %>%
-  group_by(geoid) %>%
-  summarise(sum(dosage_unit))
-
-```
-
-#Now that I have that, I'd like to link each of these tracts to their corresponding Continuum of Care, WV's Balance of State CoC,which handles many rural parts of the state.
-
-#First, I'll load in crosswalk, which allows me to do this.
+Loading crosswalk, which connects Census tracts and Continuums of Care.
 
 ```{r}
 crosswalk <- read_csv("data/crosswalk-coc-to-tract.csv")
 ```
-#Now, I'll join it to the Mingo Census tract totals I calculated earlier.
+ 
+Bringing in pills and population data for each Census tract in the country
+```{r}
+tract_pills <- read_csv("data/tract_pills.csv")
+```
+
+Filtering only for 2010, so that I can compare pills to population.
 
 ```{r}
-mingo_coc_census_tracts <- crosswalk %>%
-  inner_join(mingo_tracts_pills_per_year, by = c("tract_fips"="geoid"))
+tract_pills_2010 <- tract_pills %>%
+  filter(year == "2010")
+```
+
+Getting population per CoC in 2010
+```{r}
+coc_pop <- tract_pills_2010 %>%
+  inner_join(crosswalk, by =c("GEOID" = "tract_fips")) %>%
+  group_by(coc_code) %>%
+  summarise(total_2010_population = sum(total_2010_population))
+
+```
+
+Getting pills per CoC in 2010
+
+```{r}
+coc_pills <- tract_pills_2010  %>%
+  inner_join(crosswalk, by =c("GEOID" = "tract_fips")) %>%
+  group_by(coc_code) %>%
+  summarise(total_pills = sum(total_pills))
+```
+
+Getting pills per person in each CoC in 2010
+```{r}
+coc_pills_per_person <- coc_pills %>%
+  inner_join(coc_pop, by = "coc_code") %>%
+  mutate(pills_per_capita = total_pills/total_2010_population) %>%
+  arrange(desc(pills_per_capita))
+```
+
+Now, we want to get an average number of pills per CoC between 2006 and 2012, and divide that by the 2010 population.
+
+```{r}
+coc_pills_avg <- tract_pills %>%
+  inner_join(crosswalk, by =c("GEOID" = "tract_fips")) %>%
+ group_by(coc_code) %>%
+ summarise(avg_pills = mean(total_pills))
+
+coc_pills_per_person_avg <- coc_pills_avg %>%
+ inner_join(coc_pills_per_person, by = "coc_code") %>%
+  select(coc_code,avg_pills, total_2010_population) %>%
+  mutate(pills_per_capita = avg_pills/total_2010_population) %>%
+  arrange(desc(pills_per_capita))
+
   
 ```
 
-#Now I have Census tracts together with the CoC designation for Mingo, meaning I could join in homelessness data. It is, however, important to note, that since Mingo County forms part of the Balance of State CoC, it's not the only locality included within the HUD homelessness data. Rather, the homelessness data that will be pulled in comes from numerous rural parts of the state, across about 40 counties. So, I thought it might be interesting to do this for a county is also a CoC, such as Mendocino County, which had the highest rate of homelessness in 2017.
+Bringing in PIT Count data for comparison
+```{r}
+pit_count <- read_csv("data/hud-pit-all.csv")
+```
+
+Filtering for only 2014 data (the first year we really consider reliable)
 
 ```{r}
-mend_pharmacy_pill_totals <- combined_buyer_annual(county = "Mendocino", state = "CA", key = key) %>%
-  clean_names()
+pit_count_2014 <- pit_count %>%
+select(coc_code, ends_with("_2014"))
+```
 
-mend_tracts_pills_per_year <- mend_pharmacy_pill_totals %>%
-  inner_join(pharmacy_census_tract, by="buyer_dea_no")
+Now I want to join this with 'coc_pills_per_person_avg'
 
-mendocino_tracts_pills_per_year <- mend_tracts_pills_per_year %>%
-  group_by(geoid) %>%
-  summarise(sum(dosage_unit))
+```{r}
+homelessness_rate_pills_per_person <- coc_pills_per_person_avg %>%
+  inner_join(pit_count_2014, by = "coc_code") %>%
+  select(coc_code,avg_pills, total_2010_population, pills_per_capita, overall_homeless_2014) %>%
+ mutate(homelessness_rate = overall_homeless_2014/total_2010_population) %>%
+  arrange(desc(homelessness_rate))
 
 ```
 
-#Now that I have the number of pills that flowed into the county's different census tracts during the 2006 to 2012 period, let's connect that to CoC, just like before.
+Now I have a dataframe that shows me homelessness rate by coc's as well as the amount of pills person they received, on average, between 2006 and 2012 (based on 2010 census population figures). Yay! 
+
+First, I'd like to see if there's any kind of correlation I can see between homelessness rates. Right off the bat, it looks like a bit of a mixed bag, seeing as DC, which has the second highest homelessness rate, has a pills rate of less than one per person. In the CoC with the highest homelessness rate, there are roughly 20 pills per person though. So let's take a look graphically. 
 
 ```{r}
-mendo_coc_census_tracts <- crosswalk %>%
-  inner_join(mendocino_tracts_pills_per_year, by = c("tract_fips"="geoid"))
+ggplot(homelessness_rate_pills_per_person) +
+ geom_point(aes(homelessness_rate, pills_per_capita)) +
+ labs(x="Homelessness Rate", y="Pills per Capita", title="Low positive correlation between homelessness and opioid pills", caption = "Source: DEA ARCOS database, HUD PIT Count", fill="coc_code") +
+ theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+ geom_smooth(aes(homelessness_rate, pills_per_capita), method = "lm", se = FALSE) +
+ geom_text(aes(homelessness_rate, pills_per_capita, label=coc_code))
 ```
 
-#This will work well for analysis purposes once I can bring in homelessness data because Mendocino County is its own CoC. In the meantime, I will answer questions I feel will be helfpul dor my analysis in the future. See below.
+PREVIOUS WORK: Answering questions that will be helpful for future analysis
 
 Question 1: I know that Mendocino County, California had the highest rate of homelessness in 2017 based on PIT count data analysis by the Howard Center. How many opioids were shipped there between '06 and '12? 
 
