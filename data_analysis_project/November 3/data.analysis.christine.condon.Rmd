@@ -23,6 +23,7 @@ library(tidycensus)
 library(ggthemes)
 #install.packages("mapview")
 library(mapview)
+library(ggrepel)
 ```
 
 Storing key for ARCOS access.
@@ -94,7 +95,7 @@ coc_pills_per_person <- coc_pills %>%
   arrange(desc(pills_per_capita))
 ```
 
-Now, we want to get an average number of pills per CoC between 2006 and 2012, and divide that by the 2010 population.
+Now, we want to get an average number of pills per CoC between 2006 and 2012, and we want to divide that by the 2010 population.
 
 ```{r}
 coc_pills_avg <- tract_pills %>%
@@ -120,7 +121,7 @@ Filtering for only 2014 data (the first year we really consider reliable)
 
 ```{r}
 pit_count_2014 <- pit_count %>%
-select(coc_code, ends_with("_2014"))
+select(coc_code, coc_name, ends_with("_2014"))
 ```
 
 Now I want to join this with 'coc_pills_per_person_avg'
@@ -128,7 +129,7 @@ Now I want to join this with 'coc_pills_per_person_avg'
 ```{r}
 homelessness_rate_pills_per_person <- coc_pills_per_person_avg %>%
   inner_join(pit_count_2014, by = "coc_code") %>%
-  select(coc_code,avg_pills, total_2010_population, pills_per_capita, overall_homeless_2014) %>%
+  select(coc_code, coc_name, avg_pills, total_2010_population, pills_per_capita, overall_homeless_2014) %>%
  mutate(homelessness_rate = overall_homeless_2014/total_2010_population) %>%
   arrange(desc(homelessness_rate))
 
@@ -144,8 +145,12 @@ ggplot(homelessness_rate_pills_per_person) +
  labs(x="Homelessness Rate", y="Pills per Capita", title="Low positive correlation between homelessness and opioid pills", caption = "Source: DEA ARCOS database, HUD PIT Count", fill="coc_code") +
  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
  geom_smooth(aes(homelessness_rate, pills_per_capita), method = "lm", se = FALSE) +
- geom_text(aes(homelessness_rate, pills_per_capita, label=coc_code))
+   geom_text_repel(aes(homelessness_rate, pills_per_capita, label=coc_name),
+            subset(homelessness_rate_pills_per_person, pills_per_capita > 10))
+
 ```
+
+In this graph, you can see mendocino county is a pretty big outlier, with both a high rate of pills per person and a high homelessness rate. So this will be an area of interest going forward. (See below)
 
 PREVIOUS WORK: Answering questions that will be helpful for future analysis
 
