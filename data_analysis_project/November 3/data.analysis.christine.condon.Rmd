@@ -24,6 +24,8 @@ library(ggthemes)
 #install.packages("mapview")
 library(mapview)
 library(ggrepel)
+#install.packages('corrr')
+library(corrr)
 ```
 
 Storing key for ARCOS access.
@@ -54,105 +56,591 @@ tracts_pills_per_year <- pharmacy_pill_totals %>%
 Loading crosswalk, which connects Census tracts and Continuums of Care.
 
 ```{r}
-crosswalk <- read_csv("data/crosswalk-coc-to-tract.csv")
+#import coc_crosswalk
+coc_crosswalk <- read_csv("data/crosswalk-coc-to-tract.csv")
+# API KEY
+census_api_key("797ae2d903eb9bee9daa41bb71c0696897cbcba7")
+# Define a list of states
+states <- c("AL",	"AK",	"AZ",	"AR",	"CA",	"CO",	"CT", "DC", "DE",	"FL",	"GA",	"HI",	"ID",	"IL",	"IN",	"IA",	"KS",	"KY",	"LA",	"ME",	"MD",	"MA",	"MI",	"MN",	"MS",	"MO",	"MT",	"NE",	"NV",	"NH",	"NJ",	"NM",	"NY",	"NC",	"ND",	"OH",	"OK",	"OR",	"PA",	"RI",	"SC",	"SD",	"TN",	"TX",	"UT",	"VT",	"VA",	"WA",	"WV",	"WI",	"WY")
+# Pull
+population_2010 <- get_decennial(geography = "tract", variables = "P001001", state=states, year = 2010, geometry = FALSE)
+population_2010 <- population_2010 %>%
+  rename(total_2010_population = value)
+coc_crosswalk <- coc_crosswalk %>%
+  inner_join(population_2010, by=c("tract_fips" = "GEOID")) %>%
+  filter(zillow_cluster_num == "1")
 ```
  
-Bringing in pills and population data for each Census tract in the country
+Bringing in pills and population data for each Census tract in the country.
 ```{r}
-tract_pills <- read_csv("data/tract_pills.csv")
-```
-
-Filtering only for 2010, so that I can compare pills to population.
-
-```{r}
-tract_pills_2010 <- tract_pills %>%
-  filter(year == "2010")
-```
-
-Getting population per CoC in 2010
-```{r}
-coc_pop <- tract_pills_2010 %>%
-  inner_join(crosswalk, by =c("GEOID" = "tract_fips")) %>%
-  group_by(coc_code) %>%
-  summarise(total_2010_population = sum(total_2010_population))
-
-```
-
-Getting pills per CoC in 2010
-
-```{r}
-coc_pills <- tract_pills_2010  %>%
-  inner_join(crosswalk, by =c("GEOID" = "tract_fips")) %>%
-  group_by(coc_code) %>%
+#import tract_pills
+tract_pills <- read_csv("data/tract_pills.csv") %>%
+  select(-total_2010_population) %>%
+  group_by(GEOID) %>%
   summarise(total_pills = sum(total_pills))
 ```
 
-Getting pills per person in each CoC in 2010
+Joining total 2010 population and total pills.
 ```{r}
-coc_pills_per_person <- coc_pills %>%
-  inner_join(coc_pop, by = "coc_code") %>%
-  mutate(pills_per_capita = total_pills/total_2010_population) %>%
-  arrange(desc(pills_per_capita))
+#
+coc_crosswalk_x <- coc_crosswalk %>%
+  left_join(tract_pills, by=c("tract_fips" = "GEOID")) %>%
+  group_by(coc_code, coc_name, state_code) %>%
+  summarise(total_2010_population = sum(total_2010_population, na.rm = TRUE),
+            total_pills = sum(total_pills, na.rm=TRUE))
 ```
 
-Now, we want to get an average number of pills per CoC between 2006 and 2012, and we want to divide that by the 2010 population.
-
-```{r}
-coc_pills_avg <- tract_pills %>%
-  inner_join(crosswalk, by =c("GEOID" = "tract_fips")) %>%
- group_by(coc_code) %>%
- summarise(avg_pills = mean(total_pills))
-
-coc_pills_per_person_avg <- coc_pills_avg %>%
- inner_join(coc_pills_per_person, by = "coc_code") %>%
-  select(coc_code,avg_pills, total_2010_population) %>%
-  mutate(pills_per_capita = avg_pills/total_2010_population) %>%
-  arrange(desc(pills_per_capita))
-
-  
-```
-
-Bringing in PIT Count data for comparison
+Bringing in PIT Count data for comparison.
 ```{r}
 pit_count <- read_csv("data/hud-pit-all.csv")
 ```
 
-Filtering for only 2014 data (the first year we really consider reliable)
+Filtering for one year.
 
 ```{r}
 pit_count_2014 <- pit_count %>%
 select(coc_code, coc_name, ends_with("_2014"))
 ```
 
-Now I want to join this with 'coc_pills_per_person_avg'
+Now I want to join this with 'coc_crosswalk_x' so I can compare PIT count and pills per person
 
 ```{r}
-homelessness_rate_pills_per_person <- coc_pills_per_person_avg %>%
+homelessness_rate_pills_per_person <- coc_crosswalk_x %>%
   inner_join(pit_count_2014, by = "coc_code") %>%
-  select(coc_code, coc_name, avg_pills, total_2010_population, pills_per_capita, overall_homeless_2014) %>%
- mutate(homelessness_rate = overall_homeless_2014/total_2010_population) %>%
+  select(coc_code, total_2010_population, total_pills, overall_homeless_2014) %>%
+  mutate(pills_per_person = (total_pills/total_2010_population)) %>%
+ mutate(homelessness_rate = (overall_homeless_2014/total_2010_population)) %>%
   arrange(desc(homelessness_rate))
 
 ```
 
-Now I have a dataframe that shows me homelessness rate by coc's as well as the amount of pills person they received, on average, between 2006 and 2012 (based on 2010 census population figures). Yay! 
+Now I have a dataframe that shows me homelessness rate by coc as well as the amount of pills person they received, on average, between 2006 and 2012 (based on 2010 census population figures).
 
-First, I'd like to see if there's any kind of correlation I can see between homelessness rates. Right off the bat, it looks like a bit of a mixed bag, seeing as DC, which has the second highest homelessness rate, has a pills rate of less than one per person. In the CoC with the highest homelessness rate, there are roughly 20 pills per person though. So let's take a look graphically. 
+First, I'd like to see if there's any kind of correlation here. 
+
+Question 1: Correlation between homelessness rate and pills per capita 2014?
+```{r}
+# Test correlations
+homelessness_rate_pills_per_person %>%
+  ungroup() %>%
+  select(pills_per_person, homelessness_rate) %>%
+  cor()
+
+cor.test(homelessness_rate_pills_per_person$pills_per_person, homelessness_rate_pills_per_person$homelessness_rate)
+```
+Since the p value is greater than .05, the correlation is not statistically significant.
+
+Question 2: Correlation between sheltered homelessness rate and pills per capita 2014? (Sheltered numbers tend to be more reliable)
 
 ```{r}
-ggplot(homelessness_rate_pills_per_person) +
- geom_point(aes(homelessness_rate, pills_per_capita)) +
- labs(x="Homelessness Rate", y="Pills per Capita", title="Low positive correlation between homelessness and opioid pills", caption = "Source: DEA ARCOS database, HUD PIT Count", fill="coc_code") +
- theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
- geom_smooth(aes(homelessness_rate, pills_per_capita), method = "lm", se = FALSE) +
-   geom_text_repel(aes(homelessness_rate, pills_per_capita, label=coc_name),
-            subset(homelessness_rate_pills_per_person, pills_per_capita > 10))
+#Bringing in sheltered data instead.
+homelessness_rate_pills_per_person <- coc_crosswalk_x %>%
+  inner_join(pit_count_2014, by = "coc_code") %>%
+  select(coc_code, total_2010_population, total_pills, sheltered_total_homeless_2014) %>%
+  mutate(pills_per_person = (total_pills/total_2010_population)) %>%
+ mutate(sheltered_homelessness_rate = (sheltered_total_homeless_2014/total_2010_population)) %>%
+  arrange(desc(sheltered_homelessness_rate))
 
 ```
 
-In this graph, you can see mendocino county is a pretty big outlier, with both a high rate of pills per person and a high homelessness rate. So this will be an area of interest going forward. (See below)
+```{r}
+# Test correlation
+homelessness_rate_pills_per_person %>%
+  ungroup() %>%
+  select(pills_per_person, sheltered_homelessness_rate) %>%
+  cor()
 
-PREVIOUS WORK: Answering questions that will be helpful for future analysis
+cor.test(homelessness_rate_pills_per_person$pills_per_person, homelessness_rate_pills_per_person$sheltered_homelessness_rate)
+```
+Since the p value is greater than .05, the correlation is not statistically significant.
+
+Question 3: Correlation between unsheltered homelessness rate and pills per capita 2014?
+
+```{r}
+#Bringing in unsheltered data instead
+homelessness_rate_pills_per_person <- coc_crosswalk_x %>%
+  inner_join(pit_count_2014, by = "coc_code") %>%
+  select(coc_code, total_2010_population, total_pills, unsheltered_homeless_2014) %>%
+  mutate(pills_per_person = (total_pills/total_2010_population)) %>%
+ mutate(unsheltered_homelessness_rate = (unsheltered_homeless_2014/total_2010_population)) %>%
+  arrange(desc(unsheltered_homelessness_rate))
+
+```
+
+```{r}
+# Test correlation
+homelessness_rate_pills_per_person %>%
+  ungroup() %>%
+  select(pills_per_person, unsheltered_homelessness_rate) %>%
+  cor()
+
+cor.test(homelessness_rate_pills_per_person$pills_per_person, homelessness_rate_pills_per_person$unsheltered_homelessness_rate)
+```
+The p value is less than .05, the correlation is statistically significant!!
+
+Question 4: Correlation between veterans homelessness rate and pills per capita 2014?
+
+```{r}
+
+#Bringing in the veterans data instead
+homelessness_rate_pills_per_person <- coc_crosswalk_x %>%
+  inner_join(pit_count_2014, by = "coc_code") %>%
+  select(coc_code, total_2010_population, total_pills, homeless_veterans_2014) %>%
+  mutate(pills_per_person = (total_pills/total_2010_population)) %>%
+ mutate(vets_homelessness_rate = (homeless_veterans_2014/total_2010_population)) %>%
+  arrange(desc(vets_homelessness_rate))
+
+```
+
+```{r}
+# Test correlation
+homelessness_rate_pills_per_person %>%
+  ungroup() %>%
+  select(pills_per_person, vets_homelessness_rate) %>%
+  cor()
+
+cor.test(homelessness_rate_pills_per_person$pills_per_person, homelessness_rate_pills_per_person$vets_homelessness_rate)
+```
+Since the p value is greater than .05, the correlation is not statistically significant.
+
+Question 5: Correlation between chronic homelessness and pills per capita 2014?
+
+```{r}
+#Bringing in the chronic data instead
+homelessness_rate_pills_per_person <- coc_crosswalk_x %>%
+  inner_join(pit_count_2014, by = "coc_code") %>%
+  select(coc_code, total_2010_population, total_pills, chronically_homeless_2014) %>%
+  mutate(pills_per_person = (total_pills/total_2010_population)) %>%
+ mutate(chronic_homelessness_rate = (chronically_homeless_2014/total_2010_population)) %>%
+  arrange(desc(chronic_homelessness_rate))
+
+```
+
+```{r}
+# Test correlation
+homelessness_rate_pills_per_person %>%
+  ungroup() %>%
+  select(pills_per_person, chronic_homelessness_rate) %>%
+  cor()
+
+cor.test(homelessness_rate_pills_per_person$pills_per_person, homelessness_rate_pills_per_person$chronic_homelessness_rate)
+```
+The p value is less than .05, the correlation is statistically significant!!
+
+Question 6: Let's try a different year, since it may have taken a bit for pill shipments to impact homelessness. So now let's see if there's any correlation between the homelessness rate and pills per person rate in 2017, for example.
+
+```{r}
+pit_count_2017 <- pit_count %>%
+select(coc_code, coc_name, ends_with("_2017"))
+```
+
+```{r}
+#Modifying original object so that it's 2017 data instead of 2014 data.
+homelessness_rate_pills_per_person <- coc_crosswalk_x %>%
+  inner_join(pit_count_2017, by = "coc_code") %>%
+  select(coc_code, total_2010_population, total_pills, overall_homeless_2017) %>%
+  mutate(pills_per_person = (total_pills/total_2010_population)) %>%
+ mutate(homelessness_rate = (overall_homeless_2017/total_2010_population)) %>%
+  arrange(desc(homelessness_rate))
+
+```
+
+```{r}
+# Test correlation
+homelessness_rate_pills_per_person %>%
+  ungroup() %>%
+  select(pills_per_person, homelessness_rate) %>%
+  cor()
+
+cor.test(homelessness_rate_pills_per_person$pills_per_person, homelessness_rate_pills_per_person$homelessness_rate)
+```
+Since the p value is greater than .05, the correlation is not statistically significant.
+
+Question 7: Correlation between sheltered homelessness rate in 2017 and pills per capita?
+
+```{r}
+#Bringing in the sheltered 2017 data instead 
+homelessness_rate_pills_per_person <- coc_crosswalk_x %>%
+  inner_join(pit_count_2017, by = "coc_code") %>%
+  select(coc_code, total_2010_population, total_pills, sheltered_total_homeless_2017) %>%
+  mutate(pills_per_person = (total_pills/total_2010_population)) %>%
+ mutate(sheltered_homelessness_rate = (sheltered_total_homeless_2017/total_2010_population)) %>%
+  arrange(desc(sheltered_homelessness_rate))
+
+```
+
+```{r}
+# Test correlation
+homelessness_rate_pills_per_person %>%
+  ungroup() %>%
+  select(pills_per_person, sheltered_homelessness_rate) %>%
+  cor()
+
+cor.test(homelessness_rate_pills_per_person$pills_per_person, homelessness_rate_pills_per_person$sheltered_homelessness_rate)
+```
+Since the p value is greater than .05, the correlation is not statistically significant.
+
+Question 8: Correlation between unsheltered homelessness rate in 2017 and pills per capita?
+```{r}
+#Bringing in the unsheltered 2017 data
+homelessness_rate_pills_per_person <- coc_crosswalk_x %>%
+  inner_join(pit_count_2017, by = "coc_code") %>%
+  select(coc_code, total_2010_population, total_pills, unsheltered_homeless_2017) %>%
+  mutate(pills_per_person = (total_pills/total_2010_population)) %>%
+ mutate(unsheltered_homelessness_rate = (unsheltered_homeless_2017/total_2010_population)) %>%
+  arrange(desc(unsheltered_homelessness_rate))
+
+```
+
+```{r}
+# Test correlation
+homelessness_rate_pills_per_person %>%
+  ungroup() %>%
+  select(pills_per_person, unsheltered_homelessness_rate) %>%
+  cor()
+
+cor.test(homelessness_rate_pills_per_person$pills_per_person, homelessness_rate_pills_per_person$unsheltered_homelessness_rate)
+```
+The p value is less than .05, the correlation is statistically significant!!
+
+Question 9: Correlation between veterans homelessness in 2017 and pills per capita?
+```{r}
+#Bringing in the vets 2017 data instead
+homelessness_rate_pills_per_person <- coc_crosswalk_x %>%
+  inner_join(pit_count_2017, by = "coc_code") %>%
+  select(coc_code, total_2010_population, total_pills, homeless_veterans_2017) %>%
+  mutate(pills_per_person = (total_pills/total_2010_population)) %>%
+ mutate(vets_homelessness_rate = (homeless_veterans_2017/total_2010_population)) %>%
+  arrange(desc(vets_homelessness_rate))
+
+```
+
+```{r}
+# Test correlation
+homelessness_rate_pills_per_person %>%
+  ungroup() %>%
+  select(pills_per_person, vets_homelessness_rate) %>%
+  cor()
+
+cor.test(homelessness_rate_pills_per_person$pills_per_person, homelessness_rate_pills_per_person$vets_homelessness_rate)
+```
+Since the p value is greater than .05, the correlation is not statistically significant.
+
+Question 10: Correlation between chronic homelessness in 2017 and pills per capita?
+```{r}
+#Bringing in the chronic 2017 data instead
+homelessness_rate_pills_per_person <- coc_crosswalk_x %>%
+  inner_join(pit_count_2017, by = "coc_code") %>%
+  select(coc_code, total_2010_population, total_pills, chronically_homeless_2017) %>%
+  mutate(pills_per_person = (total_pills/total_2010_population)) %>%
+ mutate(chronic_homelessness_rate = (chronically_homeless_2017/total_2010_population)) %>%
+  arrange(desc(chronic_homelessness_rate))
+
+```
+
+```{r}
+# Test correlation
+homelessness_rate_pills_per_person %>%
+  ungroup() %>%
+  select(pills_per_person, chronic_homelessness_rate) %>%
+  cor()
+
+cor.test(homelessness_rate_pills_per_person$pills_per_person, homelessness_rate_pills_per_person$chronic_homelessness_rate)
+```
+The p value is less than .05, the correlation is statistically significant!!
+
+Question 11: It may be interesting to compare opioid death rates with pit count numbers. Let's bring in that data. Then, I'll assess whether there's a correlation.
+```{r}
+#Bringing back overall homeless numbers
+homelessness_rate_pills_per_person <- coc_crosswalk_x %>%
+  inner_join(pit_count_2017, by = "coc_code") %>%
+  select(coc_code, total_2010_population, total_pills, overall_homeless_2017) %>%
+  mutate(pills_per_person = (total_pills/total_2010_population)) %>%
+ mutate(homelessness_rate = (overall_homeless_2017/total_2010_population)) %>%
+  arrange(desc(homelessness_rate))
+
+```
+
+```{r}
+#brining in death rates
+
+opioid_death_rates <- read.delim("data/2006-2012.txt")
+
+#The death rates are organized by county, so I'll want to compare them with CoCs that are also counties. Many of the CoCs in Maryland, for example, are counties, so let's start there.
+
+#Only Maryland CoCs that received pills
+homelessness_rate_opioid_deaths <- homelessness_rate_pills_per_person %>%
+  select(coc_code, coc_name.x, homelessness_rate) %>%
+  dplyr::filter(grepl("md", coc_code))
+
+#Eliminating the Maryland CoC that received pills but is NOT a sinlge county
+homelessness_rate_opioid_deaths <- homelessness_rate_opioid_deaths[-c(2),]
+
+#Manually add county codes to CoCs to allow you to join in the opiod death rates
+county_code <- c('24031','24013','24025', '24003','24033','24027','24023')
+homelessness_rate_opioid_deaths['county_code'] <- county_code
+
+#Cleaning up before join
+opioid_death_rates <- opioid_death_rates %>%
+  clean_names()
+homelessness_rate_opioid_deaths[, c(4)] <- sapply(homelessness_rate_opioid_deaths[, c(4)], as.numeric)
+
+#Joining
+homeless_opioid_deaths <- homelessness_rate_opioid_deaths %>%
+inner_join(opioid_death_rates, by = "county_code") %>%
+  select(coc_code, coc_name.x, homelessness_rate, crude_rate)
+
+#Cleaning before correlation test
+homeless_opioid_deaths <- homeless_opioid_deaths[-c(7),]
+homeless_opioid_deaths[, c(4)] <- sapply(homeless_opioid_deaths[, c(4)], as.numeric)
+```
+
+```{r}
+
+#Testing Correlation
+homeless_opioid_deaths %>%
+  ungroup() %>%
+  select(homelessness_rate, crude_rate) %>%
+  cor()
+
+cor.test(homeless_opioid_deaths$homelessness_rate, homeless_opioid_deaths$crude_rate)
+
+```
+Since the p value is greater than .05, the correlation is not statistically significant.
+
+Question 12: Correlation between opioid death rate and sheltered homelessness rate in MD counties?
+
+```{r}
+#Bringing in sheltered data
+homelessness_rate_pills_per_person <- coc_crosswalk_x %>%
+  inner_join(pit_count_2017, by = "coc_code") %>%
+  select(coc_code, total_2010_population, total_pills, sheltered_total_homeless_2017) %>%
+  mutate(pills_per_person = (total_pills/total_2010_population)) %>%
+ mutate(sheltered_homelessness_rate = (sheltered_total_homeless_2017/total_2010_population)) %>%
+  arrange(desc(sheltered_homelessness_rate))
+
+```
+
+```{r}
+#Altering original object with sheltered data
+opioid_death_rates <- read.delim("data/2006-2012.txt")
+
+#The death rates are organized by county, so I'll want to compare them with CoCs that are also counties. Many of the CoCs in Maryland, for example, are counties, so let's start there.
+
+#Only Maryland CoCs that received pills
+homelessness_rate_opioid_deaths <- homelessness_rate_pills_per_person %>%
+  select(coc_code, coc_name.x, sheltered_homelessness_rate) %>%
+  dplyr::filter(grepl("md", coc_code))
+
+#Eliminating the Maryland CoC that received pills but is NOT a sinlge county
+homelessness_rate_opioid_deaths <- homelessness_rate_opioid_deaths[-c(2),]
+
+#Manually add county codes to CoCs to allow you to join in the opiod death rates
+county_code <- c('24031','24013','24025', '24003','24033','24027','24023')
+homelessness_rate_opioid_deaths['county_code'] <- county_code
+
+#Cleaning up before join
+opioid_death_rates <- opioid_death_rates %>%
+  clean_names()
+homelessness_rate_opioid_deaths[, c(4)] <- sapply(homelessness_rate_opioid_deaths[, c(4)], as.numeric)
+
+#Joining
+homeless_opioid_deaths <- homelessness_rate_opioid_deaths %>%
+inner_join(opioid_death_rates, by = "county_code") %>%
+  select(coc_code, coc_name.x, sheltered_homelessness_rate, crude_rate)
+
+#Cleaning before correlation test
+homeless_opioid_deaths <- homeless_opioid_deaths[-c(7),]
+homeless_opioid_deaths[, c(4)] <- sapply(homeless_opioid_deaths[, c(4)], as.numeric)
+```
+
+```{r}
+#Testing Correlation
+homeless_opioid_deaths %>%
+  ungroup() %>%
+  select(sheltered_homelessness_rate, crude_rate) %>%
+  cor()
+
+cor.test(homeless_opioid_deaths$sheltered_homelessness_rate, homeless_opioid_deaths$crude_rate)
+
+```
+Since the p value is greater than .05, the correlation is not statistically significant.
+
+Question 13: Correlation between opioid death rate and unsheltered homelessness rate in MD counties?
+
+```{r}
+#bringing in unsheltered data
+homelessness_rate_pills_per_person <- coc_crosswalk_x %>%
+  inner_join(pit_count_2017, by = "coc_code") %>%
+  select(coc_code, total_2010_population, total_pills, unsheltered_homeless_2017) %>%
+  mutate(pills_per_person = (total_pills/total_2010_population)) %>%
+ mutate(unsheltered_homelessness_rate = (unsheltered_homeless_2017/total_2010_population)) %>%
+  arrange(desc(unsheltered_homelessness_rate))
+
+```
+
+```{r}
+#Altering original object with unsheltered data
+opioid_death_rates <- read.delim("data/2006-2012.txt")
+
+#The death rates are organized by county, so I'll want to compare them with CoCs that are also counties. Many of the CoCs in Maryland, for example, are counties, so let's start there.
+
+#Only Maryland CoCs that received pills
+homelessness_rate_opioid_deaths <- homelessness_rate_pills_per_person %>%
+  select(coc_code, coc_name.x, unsheltered_homelessness_rate) %>%
+  dplyr::filter(grepl("md", coc_code))
+
+#Eliminating the Maryland CoC that received pills but is NOT a sinlge county
+homelessness_rate_opioid_deaths <- homelessness_rate_opioid_deaths[-c(2),]
+
+#Manually add county codes to CoCs to allow you to join in the opiod death rates
+county_code <- c('24031','24013','24025', '24003','24033','24027','24023')
+homelessness_rate_opioid_deaths['county_code'] <- county_code
+
+#Cleaning up before join
+opioid_death_rates <- opioid_death_rates %>%
+  clean_names()
+homelessness_rate_opioid_deaths[, c(4)] <- sapply(homelessness_rate_opioid_deaths[, c(4)], as.numeric)
+
+#Joining
+homeless_opioid_deaths <- homelessness_rate_opioid_deaths %>%
+inner_join(opioid_death_rates, by = "county_code") %>%
+  select(coc_code, coc_name.x, unsheltered_homelessness_rate, crude_rate)
+
+#Cleaning before correlation test
+homeless_opioid_deaths <- homeless_opioid_deaths[-c(7),]
+homeless_opioid_deaths[, c(4)] <- sapply(homeless_opioid_deaths[, c(4)], as.numeric)
+```
+
+```{r}
+#Testing Correlation
+homeless_opioid_deaths %>%
+  ungroup() %>%
+  select(unsheltered_homelessness_rate, crude_rate) %>%
+  cor()
+
+cor.test(homeless_opioid_deaths$unsheltered_homelessness_rate, homeless_opioid_deaths$crude_rate)
+
+```
+Since the p value is greater than .05, the correlation is not statistically significant.
+
+Question 14: Correlation between opioid death rate and veterans homelessness rate in MD counties?
+
+```{r}
+#Bringing in vets rate
+homelessness_rate_pills_per_person <- coc_crosswalk_x %>%
+  inner_join(pit_count_2017, by = "coc_code") %>%
+  select(coc_code, total_2010_population, total_pills, homeless_veterans_2017) %>%
+  mutate(pills_per_person = (total_pills/total_2010_population)) %>%
+ mutate(vets_homelessness_rate = (homeless_veterans_2017/total_2010_population)) %>%
+  arrange(desc(vets_homelessness_rate))
+
+```
+```{r}
+#Altering original object to include vets rate instead
+opioid_death_rates <- read.delim("data/2006-2012.txt")
+
+#The death rates are organized by county, so I'll want to compare them with CoCs that are also counties. Many of the CoCs in Maryland, for example, are counties, so let's start there.
+
+#Only Maryland CoCs that received pills
+homelessness_rate_opioid_deaths <- homelessness_rate_pills_per_person %>%
+  select(coc_code, coc_name.x, vets_homelessness_rate) %>%
+  dplyr::filter(grepl("md", coc_code))
+
+#Eliminating the Maryland CoC that received pills but is NOT a sinlge county
+homelessness_rate_opioid_deaths <- homelessness_rate_opioid_deaths[-c(2),]
+
+#Manually add county codes to CoCs to allow you to join in the opiod death rates
+county_code <- c('24031','24013','24025', '24003','24033','24027','24023')
+homelessness_rate_opioid_deaths['county_code'] <- county_code
+
+#Cleaning up before join
+opioid_death_rates <- opioid_death_rates %>%
+  clean_names()
+homelessness_rate_opioid_deaths[, c(4)] <- sapply(homelessness_rate_opioid_deaths[, c(4)], as.numeric)
+
+#Joining
+homeless_opioid_deaths <- homelessness_rate_opioid_deaths %>%
+inner_join(opioid_death_rates, by = "county_code") %>%
+  select(coc_code, coc_name.x, vets_homelessness_rate, crude_rate)
+
+#Cleaning before correlation test
+homeless_opioid_deaths <- homeless_opioid_deaths[-c(7),]
+homeless_opioid_deaths[, c(4)] <- sapply(homeless_opioid_deaths[, c(4)], as.numeric)
+```
+
+
+```{r}
+#Testing Correlation
+homeless_opioid_deaths %>%
+  ungroup() %>%
+  select(vets_homelessness_rate, crude_rate) %>%
+  cor()
+
+cor.test(homeless_opioid_deaths$vets_homelessness_rate, homeless_opioid_deaths$crude_rate)
+
+```
+Since the p value is greater than .05, the correlation is not statistically significant.
+
+Question 15: Correlation between opioid death rate and chronic homelessness rate in MD counties?
+
+```{r}
+#Bringing in chronic rate
+homelessness_rate_pills_per_person <- coc_crosswalk_x %>%
+  inner_join(pit_count_2017, by = "coc_code") %>%
+  select(coc_code, total_2010_population, total_pills, chronically_homeless_2017) %>%
+  mutate(pills_per_person = (total_pills/total_2010_population)) %>%
+ mutate(chronic_homelessness_rate = (chronically_homeless_2017/total_2010_population)) %>%
+  arrange(desc(chronic_homelessness_rate))
+
+```
+
+```{r}
+#Altering original object to bring in chronic rate
+opioid_death_rates <- read.delim("data/2006-2012.txt")
+
+#The death rates are organized by county, so I'll want to compare them with CoCs that are also counties. Many of the CoCs in Maryland, for example, are counties, so let's start there.
+
+#Only Maryland CoCs that received pills
+homelessness_rate_opioid_deaths <- homelessness_rate_pills_per_person %>%
+  select(coc_code, coc_name.x, chronic_homelessness_rate) %>%
+  dplyr::filter(grepl("md", coc_code))
+
+#Eliminating the Maryland CoC that received pills but is NOT a sinlge county
+homelessness_rate_opioid_deaths <- homelessness_rate_opioid_deaths[-c(2),]
+
+#Manually add county codes to CoCs to allow you to join in the opiod death rates
+county_code <- c('24031','24013','24025', '24003','24033','24027','24023')
+homelessness_rate_opioid_deaths['county_code'] <- county_code
+
+#Cleaning up before join
+opioid_death_rates <- opioid_death_rates %>%
+  clean_names()
+homelessness_rate_opioid_deaths[, c(4)] <- sapply(homelessness_rate_opioid_deaths[, c(4)], as.numeric)
+
+#Joining
+homeless_opioid_deaths <- homelessness_rate_opioid_deaths %>%
+inner_join(opioid_death_rates, by = "county_code") %>%
+  select(coc_code, coc_name.x, chronic_homelessness_rate, crude_rate)
+
+#Cleaning before correlation test
+homeless_opioid_deaths <- homeless_opioid_deaths[-c(7),]
+homeless_opioid_deaths[, c(4)] <- sapply(homeless_opioid_deaths[, c(4)], as.numeric)
+```
+
+```{r}
+#Testing Correlation
+homeless_opioid_deaths %>%
+  ungroup() %>%
+  select(chronic_homelessness_rate, crude_rate) %>%
+  cor()
+
+cor.test(homeless_opioid_deaths$chronic_homelessness_rate, homeless_opioid_deaths$crude_rate)
+
+```
+Since the p value is greater than .05, the correlation is not statistically significant.
+
+PREVIOUS WORK: Evaluating ARCOS database for CoCs with noteworthy homelessness numbers
 
 Question 1: I know that Mendocino County, California had the highest rate of homelessness in 2017 based on PIT count data analysis by the Howard Center. How many opioids were shipped there between '06 and '12? 
 
