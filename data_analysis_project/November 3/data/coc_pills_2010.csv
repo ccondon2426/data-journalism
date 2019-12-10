@@ -1,0 +1,395 @@
+coc_code,coc_name,state_code,total_2010_population,total_pills_2010,pills_per_person_2010
+ak-500,anchorage coc,ak,291826,9320100,31.937181745286576
+ak-501,alaska balance of state coc,ak,410946,11512680,28.015067673124936
+al-500,"birmingham/jefferson, st. clair, shelby counties coc",al,937144,47685770,50.8841437388491
+al-501,mobile city & county/baldwin county coc,al,595257,33433109,56.16583929294406
+al-502,florence/northwest alabama coc,al,268440,18812520,70.08091193562808
+al-503,huntsville/north alabama coc,al,537083,28774542,53.575596323100896
+al-504,montgomery city & county coc,al,389128,15666000,40.25924631483728
+al-506,tuscaloosa city & county coc,al,194656,7400900,38.02040522768371
+al-507,alabama balance of state coc,al,1524825,81189849,53.24535536864886
+ar-500,little rock/central arkansas coc,ar,566937,24502010,43.218223541592806
+ar-501,fayetteville/northwest arkansas coc,ar,481170,19846490,41.246316270756694
+ar-503,arkansas balance of state coc,ar,850214,43545300,51.21687010564399
+ar-504,delta hills coc,ar,362207,18455780,50.953681182307356
+ar-505,southeast arkansas coc,ar,319603,13083230,40.93587982590902
+ar-512,"boone, baxter, marion, newton counties coc",ar,103399,5455400,52.76066499676012
+az-500,arizona balance of state coc,az,1590895,62079440,39.02170790655575
+az-501,tucson/pima county coc,az,952569,41702140,43.77860291485446
+az-502,"phoenix, mesa/maricopa county coc",az,3820859,139854879,36.6029939864308
+ca-500,san jose/santa clara city & county coc,ca,1788601,29208810,16.330534311453476
+ca-501,san francisco coc,ca,805235,18149710,22.53964370649562
+ca-502,"oakland, berkeley/alameda county coc",ca,1513823,36462790,24.086560978397078
+ca-503,sacramento city & county coc,ca,1418788,59977790,42.27396200137019
+ca-504,"santa rosa, petaluma/sonoma county coc",ca,483878,18926140,39.113454217798704
+ca-505,richmond/contra costa county coc,ca,1049025,33841520,32.2599747384476
+ca-506,"salinas/monterey, san benito counties coc",ca,470326,13599350,28.914731484119525
+ca-507,marin county coc,ca,252409,7696310,30.4914246322437
+ca-508,watsonville/santa cruz city & county coc,ca,262382,9907390,37.75941184989824
+ca-509,mendocino county coc,ca,87841,5687360,64.74607529513553
+ca-510,"turlock, modesto/stanislaus county coc",ca,514453,30987120,60.23314083113521
+ca-511,stockton/san joaquin county coc,ca,685306,27740310,40.47872045480413
+ca-512,daly city/san mateo county coc,ca,718451,16789550,23.369095456753488
+ca-513,"visalia/kings, tulare counties coc",ca,595161,22443620,37.71016582067709
+ca-514,fresno city & county/madera county coc,ca,1081315,36505240,33.76004217087527
+ca-515,"roseville, rocklin/placer, nevada counties coc",ca,447196,24391090,54.542281236862586
+ca-516,"redding/shasta, siskiyou, lassen, plumas, del norte, modoc, sierra counties coc",ca,318561,28427000,89.23565659324274
+ca-517,napa city & county coc,ca,136484,4554600,33.37094457958442
+ca-518,vallejo/solano county coc,ca,413344,15877931,38.41335788108694
+ca-519,"chico, paradise/butte county coc",ca,220000,19574960,88.9770909090909
+ca-520,merced city & county coc,ca,255793,8573330,33.51667168374428
+ca-521,"davis, woodland/yolo county coc",ca,200849,6288926,31.31171178347913
+ca-522,humboldt county coc,ca,134623,10487680,77.90407285530705
+ca-523,"colusa, glenn, trinity counties coc",ca,63327,3701820,58.45563503718793
+ca-524,yuba city & county/sutter county coc,ca,166892,11905600,71.3371521702658
+ca-525,el dorado county coc,ca,181058,8361760,46.18277016204752
+ca-526,"tuolumne, amador, calaveras, mariposa counties coc",ca,157285,11279290,71.7124328448358
+ca-527,tehama county coc,ca,63463,4463060,70.32538644564549
+ca-529,lake county coc,ca,64665,6989990,108.09541483027913
+ca-530,"alpine, inyo, mono counties coc",ca,33923,1016460,29.963741414379623
+ca-600,los angeles city & county coc,ca,9023725,167183170.5,18.527068422408707
+ca-601,san diego city and county coc,ca,3097946,77617350,25.054455435956598
+ca-602,"santa ana, anaheim/orange county coc",ca,3010232,70354980,23.371946082561077
+ca-603,santa maria/santa barbara county coc,ca,427161,14598010,34.17449158514003
+ca-604,bakersfield/kern county coc,ca,839631,28708960,34.1923535457838
+ca-606,long beach coc,ca,467654,11325020,24.216664457055856
+ca-607,pasadena coc,ca,133965,2968050,22.15541372746613
+ca-608,riverside city & county coc,ca,2189641,63822320,29.14738991460244
+ca-609,san bernardino city & county coc,ca,2035210,61208760,30.074911188526
+ca-611,"oxnard, san buenaventura/ventura county coc",ca,823318,23109780,28.069081448480418
+ca-612,glendale coc,ca,190790,2552840,13.380365847266628
+ca-613,imperial county coc,ca,174528,3532730,20.241623120645396
+ca-614,san luis obispo county coc,ca,269637,11438240,42.420884374177135
+co-500,colorado balance of state coc,co,1622705,59193226,36.47811894336925
+co-503,metropolitan denver coc,co,2774553,77035034,27.764845003861883
+co-504,colorado springs/el paso county coc,co,622263,19155620,30.783800418793984
+ct-503,"bridgeport, stamford, norwalk/fairfield county coc",ct,835936,17533550,20.974751655629138
+ct-505,connecticut balance of state coc,ct,2743517,82945814,30.23338801983002
+dc-500,district of columbia coc,dc,601723,8745500,14.53409625359177
+de-500,delaware statewide coc,de,897934,44971380,50.08316869614025
+fl-500,"sarasota, bradenton/manatee, sarasota counties coc",fl,702281,39507980,56.256655099596884
+fl-501,tampa/hillsborough county coc,fl,1229226,98699051,80.29365714685501
+fl-502,"st. petersburg, clearwater, largo/pinellas county coc",fl,916542,64725900,70.61967700334519
+fl-503,"lakeland, winterhaven/polk county coc",fl,602095,21424760,35.58368695969905
+fl-504,"daytona beach, daytona/volusia, flagler counties coc",fl,590289,35847190,60.728202626171246
+fl-505,"fort walton beach/okaloosa, walton counties coc",fl,235865,10558420,44.76467470798974
+fl-506,tallahassee/leon county coc,fl,429121,11471029,26.731455696645003
+fl-507,"orlando/orange, osceola, seminole counties coc",fl,1837359,81408200,44.30718221098871
+fl-508,"gainesville/alachua, putnam counties coc",fl,407960,21141750,51.82309540150995
+fl-509,"fort pierce/st. lucie, indian river, martin counties coc",fl,562135,24327950,43.27777135385628
+fl-510,"jacksonville-duval, clay counties coc",fl,1128442,65020790,57.61996628980488
+fl-511,"pensacola/escambia, santa rosa counties coc",fl,448991,26691094,59.44683523723193
+fl-512,st. johns county coc,fl,190039,6591610,34.68556454201506
+fl-513,"palm bay, melbourne/brevard county coc",fl,543376,30877730,56.825715526633495
+fl-514,ocala/marion county coc,fl,331298,16792891,50.68817499652881
+fl-515,"panama city/bay, jackson counties coc",fl,293909,15310549,52.0928212473929
+fl-517,"hendry, hardee, highlands counties coc",fl,253399,9761130,38.520791321197
+fl-518,"columbia, hamilton, lafayette, suwannee counties coc",fl,132751,6385960,48.104797703972096
+fl-519,pasco county coc,fl,464697,35324080,76.0152959885689
+fl-520,"citrus, hernando, lake, sumter counties coc",fl,704486,39807050,56.50509733337497
+fl-600,miami-dade county coc,fl,2496435,39548597,15.84202953411565
+fl-601,ft lauderdale/broward county coc,fl,1748066,93728402,53.61834278568429
+fl-602,punta gorda/charlotte county coc,fl,159978,10420000,65.13395591893885
+fl-603,"ft myers, cape coral/lee county coc",fl,618754,31598228,51.067513098905216
+fl-604,monroe county coc,fl,73070,4983950,68.20788285205967
+fl-605,west palm beach/palm beach county coc,fl,1320134,63554160,48.14220374598336
+fl-606,naples/collier county coc,fl,321520,11922340,37.08117690967902
+ga-500,atlanta coc,ga,417912,9225380,22.07493443595781
+ga-501,georgia balance of state coc,ga,6636200,274113273.4,41.30575832554775
+ga-502,fulton county coc,ga,534570,8718720,16.309781693697737
+ga-503,athens-clarke county coc,ga,116714,5394468,46.21954521308498
+ga-504,augusta-richmond county coc,ga,200549,8156554,40.671127754314405
+ga-505,columbus-muscogee/russell county coc,ga,242832,10892910,44.85780292547934
+ga-506,marietta/cobb county coc,ga,688078,19967420,29.019122832004513
+ga-507,savannah/chatham county coc,ga,265128,8835930,33.32703448900154
+ga-508,dekalb county coc,ga,663625,10826240,16.313791674514974
+hi-500,hawaii balance of state coc,hi,407004,17940580,44.07961592515061
+hi-501,honolulu city and county coc,hi,953207,15456660,16.21542854804885
+ia-500,"sioux city/dakota, woodbury counties coc",ia,123178,2607860,21.171475425806555
+ia-501,iowa balance of state coc,ia,2415877,62697092,25.952104349683367
+ia-502,des moines/polk county coc,ia,440558,20159070,45.758038669142316
+id-500,boise/ada county coc,id,392365,16053610,40.91498986912696
+id-501,idaho balance of state coc,id,1175217,44374052,37.75817742595623
+il-500,mchenry county coc,il,302514,6868030,22.703180679241292
+il-501,"rockford/winnebago, boone counties coc",il,349431,13475550,38.56426590657383
+il-502,"waukegan, north chicago/lake county coc",il,728750,14289080,19.607656946826758
+il-503,"champaign, urbana, rantoul/champaign county coc",il,201081,4614455,22.948239764075172
+il-504,madison county coc,il,269282,11932500,44.31228229142683
+il-506,"joliet, bolingbrook/will county coc",il,786434,18411270,23.41108090443699
+il-507,"peoria, pekin/fulton, tazewell, peoria, woodford counties coc",il,397621,12368440,31.10610355086879
+il-508,"east st. louis, belleville/st. clair county coc",il,277130,8619170,31.10154079312958
+il-509,dekalb city & county coc,il,105160,1924990,18.305344237352607
+il-510,chicago coc,il,2698248,33809520,12.53017513586594
+il-511,cook county coc,il,2484565,53481030,21.525309259367333
+il-512,bloomington/central illinois coc,il,538361,15887720,29.511275891084235
+il-513,springfield/sangamon county coc,il,197465,7873400,39.87238244752235
+il-514,dupage county coc,il,904681,19373130,21.414321733296045
+il-515,south central illinois coc,il,415880,13755480,33.075598730403
+il-516,decatur/macon county coc,il,110768,4132710,37.3096020511339
+il-517,"aurora, elgin/kane county coc",il,576257,8806280,15.281862085840173
+il-518,"rock island, moline/northwestern illinois coc",il,674729,16382180,24.27964412378896
+il-519,west central illinois coc,il,229312,6993310,30.496921225230253
+il-520,southern illinois coc,il,587481,27473830,46.76547837291759
+in-502,indiana balance of state coc,in,5584616,275826648,49.39044116909739
+in-503,indianapolis coc,in,903393,49914279,55.25200992259183
+ks-502,wichita/sedgwick county coc,ks,498365,24509470,49.179757808032264
+ks-503,topeka/shawnee county coc,ks,177934,6604150,37.11572830375308
+ks-505,"overland park, shawnee/johnson county coc",ks,544179,17555120,32.2598262704
+ks-507,kansas balance of state coc,ks,1489512,57229960,38.4219529617754
+ky-500,kentucky balance of state coc,ky,3302468,238068347,72.08801023961473
+ky-501,louisville-jefferson county coc,ky,741096,48366064,65.26288631972106
+ky-502,lexington-fayette county coc,ky,295803,12014520,40.61662660622103
+la-500,lafayette/acadiana regional coc,la,638768,31984679,50.072450404528716
+la-502,"shreveport, bossier/northwest louisiana coc",la,480450,18142227,37.760905401186385
+la-503,new orleans/jefferson parish coc,la,778615,32037719,41.14706112777175
+la-505,monroe/northeast louisiana coc,la,355761,11242430,31.601074878921523
+la-506,slidell/southeast louisiana coc,la,541234,29720690,54.91282883189157
+la-507,alexandria/central louisiana coc,la,309761,14306100,46.1843162954665
+la-508,"houma-terrebonne, thibodaux coc",la,352405,12549300,35.61044820589946
+la-509,louisiana balance of state coc,la,1078612,44765660,41.50302425710079
+ma-500,boston coc,ma,617594,12438470,20.140205377642918
+ma-502,lynn coc,ma,90329,2592090,28.696099812906155
+ma-503,cape cod islands coc,ma,242595,8669610,35.73696902244482
+ma-504,springfield/hampden county coc,ma,463490,18432710,39.7693801376513
+ma-505,new bedford coc,ma,95072,3964290,41.69776590373612
+ma-506,worcester city & county coc,ma,798552,28272410,35.40459481661808
+ma-507,"pittsfield/berkshire, franklin, hampshire counties coc",ma,360671,11701500,32.44369522362486
+ma-508,lowell coc,ma,106519,2124440,19.944235300744467
+ma-509,cambridge coc,ma,105162,1712690,16.286206044008292
+ma-510,"gloucester, haverhill, salem/essex county coc",ma,576453,16921620,29.354726230932965
+ma-510_&_ma-516_shared_jurisdiction,ma-510_&_ma-516_shared_jurisdiction,ma,843087,17518280,20.77873339287642
+ma-511,"quincy, brockton, weymouth, plymouth city and county coc",ma,640933,21420320,33.42052913487057
+ma-515,fall river coc,ma,88857,5102910,57.428339916945205
+ma-516,massachusetts balance of state coc,ma,1035361,22480580,21.71279389507621
+ma-517,somerville coc,ma,118598,1913950,16.138130491239313
+ma-519,"attleboro, taunton/bristol county coc",ma,368168,11225740,30.4908085439256
+md-500,cumberland/allegany county coc,md,75087,4586630,61.084208984244945
+md-501,baltimore coc,md,620961,17039110,27.439903633239446
+md-502,harford county coc,md,252338,11572330,45.86043322844756
+md-503,annapolis/anne arundel county coc,md,537656,20135290,37.45013540256223
+md-504,howard county coc,md,287085,6739250,23.474754863542156
+md-505,baltimore county coc,md,805029,33880680,42.086285090350785
+md-506,carroll county coc,md,167134,6785890,40.60149341247143
+md-507,cecil county coc,md,109680,7093960,64.67870167760759
+md-508,"charles, calvert, st. mary's counties coc",md,340439,13586260,39.9080598873807
+md-509,frederick city & county coc,md,233385,6549940,28.0649570452257
+md-510,garrett county coc,md,30097,1101080,36.58437718044988
+md-511,mid-shore regional coc,md,171461,5637080,32.876747481934665
+md-512,hagerstown/washington county coc,md,147430,6775250,45.95570779352913
+md-513,"wicomico, somerset, worcester counties coc",md,176657,8515980,48.206298080461
+md-600,prince george's county coc,md,863420,16241552,18.81072015936624
+md-601,montgomery county coc,md,976764,16497620,16.89007784889697
+me-500,maine balance of state coc,me,1328361,60403660,45.47232265927711
+mi-500,michigan balance of state coc,mi,2387142,104659969,43.84321041647292
+mi-501,detroit coc,mi,713777,31682650,44.38732265119218
+mi-502,"dearborn, dearborn heights, westland/wayne county coc",mi,1106807,66042360,59.66926483117653
+mi-503,"st. clair shores, warren/macomb county coc",mi,840978,45501360,54.105291696096685
+mi-504,"pontiac, royal oak/oakland county coc",mi,1204741,48406610,40.18009680088915
+mi-505,flint/genesee county coc,mi,425790,22770920,53.479226848916134
+mi-506,"grand rapids, wyoming/kent county coc",mi,602622,19935840,33.081832392445016
+mi-507,"portage, kalamazoo city & county coc",mi,250331,10054930,40.16653950169975
+mi-508,"lansing, east lansing/ingham county coc",mi,282802,12357430,43.69640242996867
+mi-509,washtenaw county coc,mi,344791,9053410,26.257674939311062
+mi-510,saginaw city & county coc,mi,200169,9398530,46.952974736347784
+mi-511,lenawee county coc,mi,99892,4083020,40.87434429183518
+mi-512,"grand traverse, antrim, leelanau counties coc",mi,166952,7066780,42.32821409746514
+mi-513,"marquette, alger counties coc",mi,76678,2688860,35.06690315344688
+mi-514,battle creek/calhoun county coc,mi,136146,7981640,58.62559311327546
+mi-515,monroe city & county coc,mi,152021,8130020,53.479585057327604
+mi-516,"norton shores, muskegon city & county coc",mi,172188,10665010,61.93817223035287
+mi-517,jackson city & county coc,mi,160248,7012820,43.762293445160005
+mi-518,livingston county coc,mi,180967,5487580,30.323650168262724
+mi-519,holland/ottawa county coc,mi,270607,6254390,23.11244720203099
+mi-523,eaton county coc,mi,107759,4328040,40.164069822474225
+mn-500,minneapolis/hennepin county coc,mn,1152425,30388170,26.368891684925266
+mn-501,st. paul/ramsey county coc,mn,508640,13356950,26.260125039320542
+mn-502,rochester/southeast minnesota coc,mn,711164,14546450,20.454424014713904
+mn-503,"dakota, anoka, washington, scott, carver counties coc",mn,1203324,27440440,22.80386662278821
+mn-504,northeast minnesota coc,mn,125999,4556530,36.16322351764696
+mn-505,st. cloud/central minnesota coc,mn,715241,17441410,24.385361018174294
+mn-506,northwest minnesota coc,mn,169114,3703910,21.901853187790486
+mn-508,moorhead/west central minnesota coc,mn,237888,5090272,21.397767016411084
+mn-509,duluth/st. louis county coc,mn,200226,8142307,40.6655828913328
+mn-511,southwest minnesota coc,mn,282261,5005677,17.7342140784593
+mo-500,st. louis county coc,mo,1003218,32918850,32.813256939169754
+mo-501,st. louis city coc,mo,324919,8933380,27.494175471425187
+mo-503,"st. charles city & county, lincoln, warren counties coc",mo,445564,13849620,31.083346051296783
+mo-600,"springfield/greene, christian, webster counties coc",mo,388798,20694620,53.22717709453238
+mo-602,"joplin/jasper, newton counties coc",mo,175518,7881150,44.90223224968379
+mo-603,"st. joseph/andrew, buchanan, dekalb counties coc",mo,119384,6728720,56.36199155665751
+mo-604,"kansas city (mo&ks), independence, lee’s summit/jackson, wyandotte counties coc",mo,980416,36736990,37.47081850969384
+mo-606,missouri balance of state coc,mo,2733770,126021560,46.09808433043014
+ms-500,"jackson/rankin, madison counties coc",ms,560327,18176590,32.43925422119584
+ms-501,mississippi balance of state coc,ms,1954146,87495856,44.77447232704209
+ms-503,gulf port/gulf coast regional coc,ms,473357,26464470,55.908056709840565
+mt-500,montana statewide coc,mt,989415,38139090,38.547111171753
+nc-500,winston-salem/forsyth county coc,nc,350670,13596880,38.774004049391166
+nc-501,asheville/buncombe county coc,nc,238318,10619360,44.559622017640294
+nc-502,durham city & county coc,nc,270249,7763410,28.726877805283277
+nc-503,north carolina balance of state coc,nc,4968102,232871635,46.87336028930163
+nc-504,"greensboro, high point coc",nc,488406,15032191,30.77806374205067
+nc-505,charlotte/mecklenburg county coc,nc,919628,21131780,22.97861744096526
+nc-506,"wilmington/brunswick, new hanover, pender counties coc",nc,362315,19260210,53.15874308267668
+nc-507,raleigh/wake county coc,nc,900993,20552200,22.81061007133241
+nc-509,"gastonia/cleveland, gaston, lincoln counties coc",nc,382429,18716280,48.940535367349234
+nc-511,fayetteville/cumberland county coc,nc,319431,11956080,37.429303981141466
+nc-513,chapel hill/orange county coc,nc,133801,2060640,15.400781757983872
+nc-516,northwest north carolina coc,nc,215329,10567750,49.07722601228817
+nd-500,north dakota statewide coc,nd,672591,12928600,19.222082959777932
+ne-500,nebraska balance of state coc,ne,888206,21299663,23.98054392787259
+ne-501,"omaha, council bluffs coc",ne,769108,21990830,28.592642385724762
+ne-502,lincoln coc,ne,245873,7065900,28.73800701988425
+nh-500,new hampshire balance of state coc,nh,915749,32721950,35.73244415227317
+nh-501,manchester coc,nh,109565,3397170,31.005978186464656
+nh-502,nashua/hillsborough county coc,nh,291156,7103680,24.39819203451071
+nj-500,atlantic city & county coc,nj,274549,10605940,38.630408415255566
+nj-501,bergen county coc,nj,910678,18530010,20.347488354830137
+nj-502,burlington county coc,nj,448734,15470920,34.476817000717574
+nj-503,"camden city & county/gloucester, cape may, cumberland counties coc",nj,1056108,46210510,43.7554776594818
+nj-504,newark/essex county coc,nj,783969,13666000,17.431811717044933
+nj-506,"jersey city, bayonne/hudson county coc",nj,643884,10078617,15.652845854222189
+nj-507,new brunswick/middlesex county coc,nj,809858,23241246,28.697927290957182
+nj-508,monmouth county coc,nj,633734,18022610,28.438761373068196
+nj-509,morris county coc,nj,492276,10346050,21.016767016876713
+nj-510,lakewood township/ocean county coc,nj,576567,19911660,34.53485891492229
+nj-511,paterson/passaic county coc,nj,501226,9681440,19.315518349008233
+nj-512,salem county coc,nj,66083,2664280,40.31717688361606
+nj-513,somerset county coc,nj,323444,5725030,17.700220130841814
+nj-514,trenton/mercer county coc,nj,366513,8405870,22.934711729188322
+nj-515,elizabeth/union county coc,nj,536499,10483866,19.54125916357719
+nj-516,"warren, sussex, hunterdon counties coc",nj,386306,9057190,23.44563636081241
+nm-500,albuquerque coc,nm,519690,26878960,51.7211414497104
+nm-501,new mexico balance of state coc,nm,1545105,54810870,35.473880415894065
+nv-500,las vegas/clark county coc,nv,1951269,113249230,58.03875836699092
+nv-501,"reno, sparks/washoe county coc",nv,421407,20233030,48.013037277501326
+nv-502,nevada balance of state coc,nv,327875,19490710,59.445550895920704
+ny-500,"rochester, irondequoit, greece/monroe county coc",ny,744344,25241460,33.91101426222284
+ny-501,"elmira/steuben, allegany, livingston, chemung, schuyler counties coc",ny,320502,10701890,33.391024080972976
+ny-503,albany city & county coc,ny,304204,8290290,27.252402992728562
+ny-504,cattaraugus county coc,ny,80317,3672640,45.72680752518147
+ny-505,"syracuse, auburn/onondaga, oswego, cayuga counties coc",ny,669161,25910355,38.72065915377615
+ny-507,schenectady city & county coc,ny,154727,4173530,26.973508178921584
+ny-508,"buffalo, niagara falls/erie, niagara, orleans, genesee, wyoming counties coc",ny,1281139,66320690,51.76697454374584
+ny-510,ithaca/tompkins county coc,ny,101564,2688460,26.470599818833445
+ny-511,"binghamton, union town/broome, otsego, chenango, delaware, cortland, tioga counties coc",ny,461777,17291640,37.445866727879476
+ny-512,troy/rensselaer county coc,ny,159429,4458960,27.968311913140017
+ny-513,"wayne, ontario, seneca, yates counties coc",ny,262302,8315760,31.70299883340577
+ny-514,"jamestown, dunkirk/chautauqua county coc",ny,134905,6838880,50.69404395685853
+ny-516,clinton county coc,ny,82128,3256320,39.64932787843367
+ny-518,"utica, rome/oneida, madison counties coc",ny,253744,9245440,36.436093070180966
+ny-519,"columbia, greene counties coc",ny,112317,4390510,39.09034251270956
+ny-520,"franklin, essex counties coc",ny,90969,2804490,30.82907364047093
+ny-522,"jefferson, lewis, st. lawrence counties coc",ny,255260,7519660,29.458826294758286
+ny-523,"glens falls, saratoga springs/saratoga, washington, warren, hamilton counties coc",ny,353366,11494630,32.52896430330026
+ny-600,new york city coc,ny,8189382,129336231,15.793161315469225
+ny-601,poughkeepsie/dutchess county coc,ny,297488,9413470,31.643192330446944
+ny-602,"newburgh, middletown/orange county coc",ny,372813,12797240,34.326163518976
+ny-603,"nassau, suffolk counties coc",ny,2833903,94868648,33.476321525472116
+ny-604,"yonkers, mount vernon/westchester county coc",ny,958829,18445670,19.23770557628107
+ny-606,rockland county coc,ny,311687,7153250,22.95010699836695
+ny-607,sullivan county coc,ny,77547,4218610,54.40068603556553
+ny-608,kingston/ulster county coc,ny,182493,6654320,36.463425994421705
+oh-500,cincinnati/hamilton county coc,oh,810205,37092710,45.78188236310563
+oh-501,toledo/lucas county coc,oh,441815,25503490,57.72436427011306
+oh-502,cleveland/cuyahoga county coc,oh,1283629,42125910,32.8178235300075
+oh-503,columbus/franklin county coc,oh,1201245,66263809,55.16260962584652
+oh-504,youngstown/mahoning county coc,oh,238823,11309450,47.354944875493565
+oh-505,"dayton, kettering/montgomery county coc",oh,539095,27671110,51.32881959580408
+oh-506,akron/summit county coc,oh,541781,27184050,50.17534760355199
+oh-507,ohio balance of state coc,oh,6116794,269547908,44.066860515492266
+oh-508,"canton, massillon, alliance/stark county coc",oh,375586,18085410,48.152513671968606
+ok-500,north central oklahoma coc,ok,310269,13967990,45.01896741214881
+ok-501,tulsa city & county coc,ok,657289,44919960,68.34126236708663
+ok-502,oklahoma city coc,ok,583319,30633681,52.5161721116576
+ok-503,oklahoma balance of state coc,ok,627716,37205520,59.27126280037469
+ok-504,norman/cleveland county coc,ok,187910,10182200,54.18657868128359
+ok-505,northeast oklahoma coc,ok,436665,23786230,54.47249035301662
+ok-506,southwest oklahoma regional coc,ok,404735,23296761,57.56052972932907
+ok-507,southeastern oklahoma regional coc,ok,541739,33985270,62.733659566691706
+or-500,"eugene, springfield/lane county coc",or,351715,20269110,57.6293589980524
+or-501,"portland, gresham/multnomah county coc",or,735334,37602730,51.13693913242146
+or-502,"medford, ashland/jackson county coc",or,203206,14740230,72.53836008779268
+or-503,central oregon coc,or,200431,8823340,44.02183294999276
+or-505,oregon balance of state coc,or,1434686,78675600,54.838201529812096
+or-506,"hillsboro, beaverton/washington county coc",or,529710,20932170,39.51628249419494
+or-507,clackamas county coc,or,375992,21013275,55.88755877784634
+pa-500,philadelphia coc,pa,1526006,60032560,39.33966183619199
+pa-501,harrisburg/dauphin county coc,pa,268100,9580300,35.734054457292054
+pa-502,"upper darby, chester, haverford/delaware county coc",pa,558979,23571770,42.169330153726705
+pa-503,"wilkes-barre, hazleton/luzerne county coc",pa,320918,13849810,43.15685003645791
+pa-504,"lower merion, norristown, abington/montgomery county coc",pa,799874,28264762,35.33651800158525
+pa-505,chester county coc,pa,498886,11783740,23.620105595266253
+pa-506,reading/berks county coc,pa,411442,9915810,24.10014048152595
+pa-508,scranton/lackawanna county coc,pa,214437,12090680,56.38336667645975
+pa-509,eastern pennsylvania coc,pa,3097664,103175207,33.30742359403731
+pa-510,lancaster city & county coc,pa,519445,16191620,31.170999817112495
+pa-511,"bristol, bensalem/bucks county coc",pa,625249,29063797.5,46.48355695091076
+pa-512,york city & county coc,pa,434972,12888940,29.631654451321005
+pa-600,"pittsburgh, mckeesport, penn hills/allegheny county coc",pa,1223348,48310352,39.49027750076021
+pa-601,western pennsylvania coc,pa,1755758,73673790,41.961244089447405
+pa-603,beaver county coc,pa,170539,6322960,37.076328581732035
+pa-605,erie city & county coc,pa,280566,12006720,42.79463655610444
+ri-500,rhode island statewide coc,ri,1052567,37943740,36.0487645917077
+sc-500,charleston/low country coc,sc,911599,30431690,33.382759305352465
+sc-501,"greenville, anderson, spartanburg/upstate coc",sc,1419166,83455767,58.80620519375464
+sc-502,columbia/midlands coc,sc,1422723,43570730,30.62488622170303
+sc-503,"myrtle beach, sumter city & county coc",sc,871876,48178540,55.25847712289362
+sd-500,south dakota statewide coc,sd,800594,18170903,22.696776393527806
+tn-500,chattanooga/southeast tennessee coc,tn,658059,46552229,70.74172528603059
+tn-501,memphis/shelby county coc,tn,927644,23264460,25.07908206165296
+tn-502,knoxville/knox county coc,tn,432226,31534060,72.95734176102317
+tn-503,central tennessee coc,tn,1061373,56735080,53.4544217725531
+tn-504,nashville-davidson county coc,tn,626681,34258740,54.66695176652875
+tn-506,upper cumberland coc,tn,547323,45020800,82.25636415791041
+tn-507,jackson/west tennessee coc,tn,675294,40596290,60.1164677903254
+tn-509,appalachian regional coc,tn,506266,39611020,78.24151730513208
+tn-510,murfreesboro/rutherford county coc,tn,262604,25909930,98.66540494432682
+tn-512,"morristown/blount, sevier, campbell, cocke counties coc",tn,648635,53180546,81.98840025592204
+tx-500,san antonio/bexar county coc,tx,1737972,54795470,31.52839631478528
+tx-503,austin/travis county coc,tx,1088805,29453720,27.051418757261402
+tx-600,"dallas city & county, irving coc",tx,3357851,94355799,28.10005536279007
+tx-601,"fort worth, arlington/tarrant county coc",tx,1917464,69859356,36.433203439543064
+tx-603,el paso city & county coc,tx,800647,13644918,17.042364487720555
+tx-604,waco/mclennan county coc,tx,349273,13210270,37.82219066460906
+tx-607,texas balance of state coc,tx,9956675,324177594,32.55882048977194
+tx-611,amarillo coc,tx,184232,7835960,42.53311042598463
+tx-624,"wichita falls/wise, palo pinto, wichita, archer counties coc",tx,329746,17700080,53.6779217943508
+tx-700,"houston, pasadena, conroe/harris, fort bend, montgomery counties coc",tx,5126496,193462777,37.737818775241415
+tx-701,"bryan, college station/brazos valley coc",tx,315741,7489241,23.719570787449207
+ut-500,salt lake city & county coc,ut,1038770,42503340,40.91698836123492
+ut-503,utah balance of state coc,ut,1157812,47231478,40.79373680701185
+ut-504,provo/mountainland coc,ut,572543,16330890,28.523429681264115
+va-500,"richmond/henrico, chesterfield, hanover counties coc",va,1002696,29893440,29.813063979511238
+va-501,"norfolk/chesapeake, suffolk, isle of wight, southampton counties coc",va,612019,14017390,22.90352096912024
+va-502,"roanoke city & county, salem coc",va,274759,13942240,50.74352432495387
+va-503,virginia beach coc,va,437994,8969170,20.477837595948802
+va-504,charlottesville coc,va,234712,6065330,25.841584580251542
+va-505,"newport news, hampton/virginia peninsula coc",va,476846,11627440,24.384056907261463
+va-507,portsmouth coc,va,95535,3873920,40.54974616632648
+va-508,lynchburg coc,va,246412,7755480,31.47362953102933
+va-513,"harrisonburg, winchester/western virginia coc",va,347380,12602970,36.28006793712937
+va-514,"fredericksburg/spotsylvania, stafford counties coc",va,327773,8894820,27.137134541283142
+va-521,virginia balance of state coc,va,1708053,87604791,51.2892697123567
+va-600,arlington county coc,va,207627,1852200,8.920805097602912
+va-601,fairfax county coc,va,1116623,17989480,16.110612086621895
+va-602,loudoun county coc,va,312311,5322580,17.04256334230943
+va-603,alexandria coc,va,139966,2010220,14.362202249117642
+va-604,prince william county coc,va,454096,9790750,21.560969486628377
+vt-500,vermont balance of state coc,vt,469196,13602190,28.990421913230293
+vt-501,burlington/chittenden county coc,vt,156545,4323908,27.62086301063592
+wa-500,seattle/king county coc,wa,1936456,65464600,33.80639684041362
+wa-501,washington balance of state coc,wa,2136998,91171329,42.663272965159535
+wa-502,spokane city & county coc,wa,471221,26222280,55.64751995348255
+wa-503,"tacoma, lakewood/pierce county coc",wa,790018,32086470,40.614859408266646
+wa-504,everett/snohomish county coc,wa,713335,34279430,48.05516342251537
+wa-507,yakima city & county coc,wa,243231,8892880,36.561458037832345
+wa-508,vancouver/clark county coc,wa,433281,17641640,40.71639421068544
+wi-500,wisconsin balance of state coc,wi,4065682,124134356,30.532234444307253
+wi-501,milwaukee city & county coc,wi,947735,48784095,51.47440476504508
+wi-502,racine city & county coc,wi,195408,8059860,41.246315401621224
+wi-503,madison/dane county coc,wi,488073,16869070,34.5625961690157
+wv-500,"wheeling, weirton area coc",wv,148878,10971700,73.69591208909308
+wv-501,"huntington/cabell, wayne counties coc",wv,138800,11752180,84.66988472622478
+wv-503,"charleston/kanawha, putnam, boone, clay counties coc",wv,282564,20260470,71.70223383021191
+wv-508,west virginia balance of state coc,wv,1282752,83212444,64.87025083570323
+wy-500,wyoming statewide coc,wy,563626,18790020,33.337745242412524

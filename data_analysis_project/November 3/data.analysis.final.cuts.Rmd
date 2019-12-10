@@ -1,0 +1,171 @@
+---
+title: "data.analysis.final.cuts"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+# Load Tidyverse, janitor and arcos, tidycensus, mapview, ggthemes, scales
+library(tidyverse)
+library(janitor)
+library(arcos)
+library(scales)
+library(tidycensus)
+#install.packages("ggthemes")
+library(ggthemes)
+#install.packages("mapview")
+library(mapview)
+library(ggrepel)
+#install.packages('corrr')
+library(corrr)
+```
+
+```{r}
+# store one of our API keys as an object called key
+key <- "uO4EK6I"
+```
+
+Loading crosswalk, which connects Census tracts and Continuums of Care.
+
+```{r}
+#import coc_crosswalk
+coc_crosswalk <- read_csv("data/crosswalk-coc-to-tract.csv")
+# API KEY
+census_api_key("797ae2d903eb9bee9daa41bb71c0696897cbcba7")
+# Define a list of states
+states <- c("AL",	"AK",	"AZ",	"AR",	"CA",	"CO",	"CT", "DC", "DE",	"FL",	"GA",	"HI",	"ID",	"IL",	"IN",	"IA",	"KS",	"KY",	"LA",	"ME",	"MD",	"MA",	"MI",	"MN",	"MS",	"MO",	"MT",	"NE",	"NV",	"NH",	"NJ",	"NM",	"NY",	"NC",	"ND",	"OH",	"OK",	"OR",	"PA",	"RI",	"SC",	"SD",	"TN",	"TX",	"UT",	"VT",	"VA",	"WA",	"WV",	"WI",	"WY")
+# Pull population from Census
+population_2010 <- get_decennial(geography = "tract", variables = "P001001", state=states, year = 2010, geometry = FALSE)
+population_2010 <- population_2010 %>%
+  rename(total_2010_population = value)
+coc_crosswalk <- coc_crosswalk %>%
+  inner_join(population_2010, by=c("tract_fips" = "GEOID"))
+
+```
+
+Bringing in pills and population data for each Census tract in the country.
+```{r}
+#import tract_pills
+tract_pills <- read_csv("data/tract_pills.csv") %>%
+  select(-total_2010_population) %>%
+  group_by(GEOID) %>%
+  summarise(total_pills = sum(total_pills))
+```
+
+Combining Census tract pill data and CoCs.
+
+```{r}
+
+coc_crosswalk_x <- coc_crosswalk %>%
+  inner_join(tract_pills, by=c("tract_fips" = "GEOID")) %>%
+  group_by(coc_code, coc_name, state_code) %>%
+  summarise(total_2010_population = sum(total_2010_population, na.rm = TRUE),
+            total_pills = sum(total_pills, na.rm=TRUE))
+
+
+```
+
+Bringing in PIT count data, filtering for one year.
+
+```{r}
+pit_count <- read_csv("data/hud-pit-all.csv")
+
+pit_count_2017 <- pit_count %>%
+select(coc_code, coc_name, ends_with("_2017"))
+```
+
+Is there a correlation between unsheltered homelessness rate in 2017 and pills per capita?
+```{r}
+coc_population <- read_csv("data/coc_pills_2010.csv")
+
+coc_crosswalk_x <- coc_crosswalk_x %>%
+  inner_join(coc_population, by = "coc_code") %>%
+select(coc_code, total_pills, total_2010_population.y) %>%
+ mutate(pills_per_person = (total_pills/total_2010_population.y))
+
+homelessness_rate_pills_per_person <- coc_crosswalk_x %>%
+inner_join(pit_count_2017, by = "coc_code") %>%
+select(coc_code, pills_per_person, unsheltered_homeless_2017, total_2010_population.y) %>%
+mutate(unsheltered_homelessness_rate = (unsheltered_homeless_2017/total_2010_population.y)) %>%
+arrange(desc(unsheltered_homelessness_rate))
+
+```
+
+```{r}
+# Test correlation
+homelessness_rate_pills_per_person %>%
+  ungroup() %>%
+  select(pills_per_person, unsheltered_homelessness_rate) %>%
+  cor()
+
+cor.test(homelessness_rate_pills_per_person$pills_per_person, homelessness_rate_pills_per_person$unsheltered_homelessness_rate)
+```
+The p value is less than .05, the correlation is statistically significant!!
+
+Let's graph it:
+```{r}
+ggplot(homelessness_rate_pills_per_person) +
+ geom_point(aes(log(unsheltered_homelessness_rate), pills_per_person)) +
+ labs(x="Homelessness Rate", y="Pills per Person", title="As pain pills flowed in, unsheltered homelessness increased", caption = "Source: DEA ARCOS database, via Washington Post, HUD PIT Count data") +
+ theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+ geom_smooth(aes(log(unsheltered_homelessness_rate), pills_per_person), method = "loess", se = FALSE) +
+ geom_text(aes(log(unsheltered_homelessness_rate), pills_per_person, label=coc_code))
+```
+
+Filtering for Zillow Cluster to see if that impacts the correlation.
+```{r}
+#import coc_crosswalk
+coc_crosswalk <- read_csv("data/crosswalk-coc-to-tract.csv")
+# API KEY
+census_api_key("797ae2d903eb9bee9daa41bb71c0696897cbcba7")
+# Define a list of states
+states <- c("AL",	"AK",	"AZ",	"AR",	"CA",	"CO",	"CT", "DC", "DE",	"FL",	"GA",	"HI",	"ID",	"IL",	"IN",	"IA",	"KS",	"KY",	"LA",	"ME",	"MD",	"MA",	"MI",	"MN",	"MS",	"MO",	"MT",	"NE",	"NV",	"NH",	"NJ",	"NM",	"NY",	"NC",	"ND",	"OH",	"OK",	"OR",	"PA",	"RI",	"SC",	"SD",	"TN",	"TX",	"UT",	"VT",	"VA",	"WA",	"WV",	"WI",	"WY")
+# Pull
+population_2010 <- get_decennial(geography = "tract", variables = "P001001", state=states, year = 2010, geometry = FALSE)
+population_2010 <- population_2010 %>%
+  rename(total_2010_population = value)
+coc_crosswalk <- coc_crosswalk %>%
+  inner_join(population_2010, by=c("tract_fips" = "GEOID")) %>%
+filter(zillow_cluster_num == 1)
+```
+
+```{r}
+#
+coc_crosswalk_x <- coc_crosswalk %>%
+  inner_join(tract_pills, by=c("tract_fips" = "GEOID")) %>%
+  group_by(coc_code, coc_name, state_code) %>%
+  summarise(total_2010_population = sum(total_2010_population, na.rm = TRUE),
+            total_pills = sum(total_pills, na.rm=TRUE))
+
+
+```
+
+```{r}
+coc_population <- read_csv("data/coc_pills_2010.csv")
+
+coc_crosswalk_x <- coc_crosswalk_x %>%
+  inner_join(coc_population, by = "coc_code") %>%
+select(coc_code, total_pills, total_2010_population.y) %>%
+ mutate(pills_per_person = (total_pills/total_2010_population.y))
+
+homelessness_rate_pills_per_person <- coc_crosswalk_x %>%
+inner_join(pit_count_2017, by = "coc_code") %>%
+select(coc_code, pills_per_person, unsheltered_homeless_2017, total_2010_population.y) %>%
+mutate(unsheltered_homelessness_rate = (unsheltered_homeless_2017/total_2010_population.y)) %>%
+arrange(desc(unsheltered_homelessness_rate))
+
+```
+```{r}
+# Test correlation
+homelessness_rate_pills_per_person %>%
+  ungroup() %>%
+  select(pills_per_person, unsheltered_homelessness_rate) %>%
+  cor()
+
+cor.test(homelessness_rate_pills_per_person$pills_per_person, homelessness_rate_pills_per_person$unsheltered_homelessness_rate)
+```
+The correlation is even larger, and has a lower p value, so this is definitely something to look into.
